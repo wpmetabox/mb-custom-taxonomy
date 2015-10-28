@@ -34,7 +34,6 @@ class MB_Custom_Taxonomy_Edit
 
 	/**
 	 * Enqueue scripts and styles.
-	 * @return void
 	 */
 	public function enqueue_scripts()
 	{
@@ -48,18 +47,21 @@ class MB_Custom_Taxonomy_Edit
 		wp_enqueue_script( 'mb-custom-taxonomy', MB_CUSTOM_TAXONOMY_URL . 'js/script.js', array( 'jquery', 'angular' ), '1.0.0', false );
 
 		$labels = array(
-			'menu_name'          => '%name%',
-			'name_admin_bar'     => '%singular_name%',
-			'all_items'          => __( 'All %name%', 'mb-custom-taxonomy' ),
-			'add_new'            => __( 'Add new', 'mb-custom-taxonomy' ),
-			'add_new_item'       => __( 'Add new %singular_name%', 'mb-custom-taxonomy' ),
-			'edit_item'          => __( 'Edit %singular_name%', 'mb-custom-taxonomy' ),
-			'new_item'           => __( 'New %singular_name%', 'mb-custom-taxonomy' ),
-			'view_item'          => __( 'View %singular_name%', 'mb-custom-taxonomy' ),
-			'search_items'       => __( 'Search %name%', 'mb-custom-taxonomy' ),
-			'not_found'          => __( 'No %name% found', 'mb-custom-taxonomy' ),
-			'not_found_in_trash' => __( 'No %name% found in Trash', 'mb-custom-taxonomy' ),
-			'parent_item_colon'  => __( 'Parent %singular_name%', 'mb-custom-taxonomy' ),
+			'menu_name'                  => '%name%',
+			'all_items'                  => __( 'All %name%', 'mb-custom-taxonomy' ),
+			'edit_item'                  => __( 'Edit %singular_name%', 'mb-custom-taxonomy' ),
+			'view_item'                  => __( 'View %singular_name%', 'mb-custom-taxonomy' ),
+			'update_item'                => __( 'Update %singular_name%', 'mb-custom-taxonomy' ),
+			'add_new_item'               => __( 'Add new %singular_name%', 'mb-custom-taxonomy' ),
+			'new_item_name'              => __( 'New %singular_name%', 'mb-custom-taxonomy' ),
+			'parent_item'                => __( 'Parent %singular_name%', 'mb-custom-taxonomy' ),
+			'parent_item_colon'          => __( 'Parent %singular_name%:', 'mb-custom-taxonomy' ),
+			'search_items'               => __( 'Search %name%', 'mb-custom-taxonomy' ),
+			'popular_items'              => __( 'Popular %name%', 'mb-custom-taxonomy' ),
+			'separate_items_with_commas' => __( 'Separate %name% with commas', 'mb-custom-taxonomy' ),
+			'add_or_remove_items'        => __( 'Add or remove %name%', 'mb-custom-taxonomy' ),
+			'choose_from_most_used'      => __( 'Choose most used %name%', 'mb-custom-taxonomy' ),
+			'not_found'                  => __( 'No %name% found', 'mb-custom-taxonomy' ),
 		);
 		wp_localize_script( 'mb-custom-taxonomy', 'MBTaxonomyLabels', $labels );
 	}
@@ -68,25 +70,12 @@ class MB_Custom_Taxonomy_Edit
 	 * Register meta boxes for add/edit mb-taxonomy page
 	 *
 	 * @param array $meta_boxes
-	 *
 	 * @return array
 	 */
 	public function register_meta_boxes( $meta_boxes )
 	{
 		$label_prefix = 'label_';
 		$args_prefix  = 'args_';
-
-		// Get list of registered post type.
-		$options    = array();
-		$post_types = get_post_types( array( '_builtin' => false ), 'objects' );
-
-		// Don't count plugin's post type.
-		unset( $post_types['mb-taxonomy'] );
-
-		foreach ( $post_types as $post_type => $post_type_object )
-		{
-			$options[$post_type] = $post_type_object->labels->singular_name;
-		}
 
 		$basic_fields    = array(
 			array(
@@ -105,13 +94,6 @@ class MB_Custom_Taxonomy_Edit
 				'name' => __( 'Slug', 'mb-custom-taxonomy' ),
 				'id'   => $args_prefix . 'taxonomy',
 				'type' => 'text',
-			),
-			array(
-				'name'     => __( 'Post Types', 'mb-custom-taxonomy' ),
-				'id'       => $args_prefix . 'post_types',
-				'type'     => 'select_advanced',
-				'options'  => $options,
-				'multiple' => true,
 			),
 		);
 		$labels_fields   = array(
@@ -159,7 +141,7 @@ class MB_Custom_Taxonomy_Edit
 			),
 			array(
 				'name'        => __( 'Parent Item', 'mb-custom-taxonomy' ),
-				'id'          => $label_prefix . 'parent_item_colon',
+				'id'          => $label_prefix . 'parent_item',
 				'type'        => 'text',
 				'placeholder' => __( 'The parent item text', 'mb-custom-taxonomy' ),
 			),
@@ -243,31 +225,36 @@ class MB_Custom_Taxonomy_Edit
 				'desc' => __( 'Whether to allow the Tag Cloud widget to use this taxonomy.', 'mb-custom-taxonomy' ),
 			),
 			array(
+				'name' => __( 'Show in quick edit?', 'mb-custom-taxonomy' ),
+				'id'   => $args_prefix . 'show_in_quick_edit',
+				'type' => 'checkbox',
+				'std'  => 1,
+				'desc' => __( 'Whether to show the taxonomy in the quick/bulk edit panel.', 'mb-custom-taxonomy' ),
+			),
+			array(
+				'name' => __( 'Show admin column?', 'mb-custom-taxonomy' ),
+				'id'   => $args_prefix . 'show_admin_column',
+				'type' => 'checkbox',
+				'desc' => __( 'Whether to allow automatic creation of taxonomy columns on associated post-types table.', 'mb-custom-taxonomy' ),
+			),
+			array(
 				'name' => __( 'Hierarchical?', 'mb-custom-taxonomy' ),
 				'id'   => $args_prefix . 'hierarchical',
 				'type' => 'checkbox',
-				'desc' => __( 'Whether the taxonomy is hierarchical. Allows Parent to be specified.', 'mb-custom-taxonomy' ),
-			),
-			array(
-				'name' => __( 'Has archive?', 'mb-custom-taxonomy' ),
-				'id'   => $args_prefix . 'has_archive',
-				'type' => 'checkbox',
-				'std'  => 1,
-				'desc' => __( 'Enables taxonomy archives. Will use <code>$post_type</code> as archive slug by default.', 'mb-custom-taxonomy' ),
+				'desc' => __( 'Is this taxonomy hierarchical (have descendants) like categories or not hierarchical like tags.', 'mb-custom-taxonomy' ),
 			),
 			array(
 				'name' => __( 'Query var', 'mb-custom-taxonomy' ),
 				'id'   => $args_prefix . 'query_var',
 				'type' => 'checkbox',
 				'std'  => 1,
-				'desc' => __( 'False to prevent queries, or string value of the query var to use for this taxonomy.', 'mb-custom-taxonomy' ),
+				'desc' => __( 'Uncheck to disable the query var, check to use the taxonomy\'s "name" as query var.', 'mb-custom-taxonomy' ),
 			),
 			array(
-				'name' => __( 'Can export?', 'mb-custom-taxonomy' ),
-				'id'   => $args_prefix . 'can_export',
+				'name' => __( 'Sort?', 'mb-custom-taxonomy' ),
+				'id'   => $args_prefix . 'sort',
 				'type' => 'checkbox',
-				'std'  => 1,
-				'desc' => __( 'Can this taxonomy be exported.', 'mb-custom-taxonomy' ),
+				'desc' => __( 'Whether this taxonomy should remember the order in which terms are added to objects.', 'mb-custom-taxonomy' ),
 			),
 		);
 
@@ -275,7 +262,7 @@ class MB_Custom_Taxonomy_Edit
 		$meta_boxes[] = array(
 			'id'         => 'basic-settings',
 			'title'      => __( 'Basic Settings', 'mb-custom-taxonomy' ),
-			'pages'      => array( 'mb-taxonomy' ),
+			'post_types' => 'mb-taxonomy',
 			'fields'     => array_merge(
 				$basic_fields,
 				array(
@@ -314,43 +301,38 @@ class MB_Custom_Taxonomy_Edit
 
 		// Labels settings
 		$meta_boxes[] = array(
-			'id'     => 'label-settings',
-			'title'  => __( 'Labels Settings', 'mb-custom-taxonomy' ),
-			'pages'  => array( 'mb-taxonomy' ),
-			'fields' => $labels_fields,
+			'id'         => 'label-settings',
+			'title'      => __( 'Labels Settings', 'mb-custom-taxonomy' ),
+			'post_types' => 'mb-taxonomy',
+			'fields'     => $labels_fields,
 		);
 
 		// Advanced settings
 		$meta_boxes[] = array(
-			'id'     => 'advanced-settings',
-			'title'  => __( 'Advanced Settings', 'mb-custom-taxonomy' ),
-			'pages'  => array( 'mb-taxonomy' ),
-			'fields' => $advanced_fields,
+			'id'         => 'advanced-settings',
+			'title'      => __( 'Advanced Settings', 'mb-custom-taxonomy' ),
+			'post_types' => 'mb-taxonomy',
+			'fields'     => $advanced_fields,
 		);
 
-		// Supports
+		// Post types
+		$options    = array();
+		$post_types = get_post_types( array( '_builtin' => false ), 'objects' );
+		unset( $post_types['mb-taxonomy'] );
+		foreach ( $post_types as $post_type => $post_type_object )
+		{
+			$options[$post_type] = $post_type_object->labels->singular_name;
+		}
 		$meta_boxes[] = array(
-			'id'         => 'supports',
-			'title'      => __( 'Supports', 'mb-custom-taxonomy' ),
+			'title'      => __( 'Assign To Post Types', 'mb-custom-taxonomy' ),
+			'context'    => 'side',
 			'post_types' => 'mb-taxonomy',
 			'priority'   => 'low',
-			'context'    => 'side',
 			'fields'     => array(
 				array(
-					'id'      => $args_prefix . 'supports',
+					'id'      => $args_prefix . 'post_types',
 					'type'    => 'checkbox_list',
-					'options' => array(
-						'title'           => __( 'Title', 'mb-custom-taxonomy' ),
-						'editor'          => __( 'Editor', 'mb-custom-taxonomy' ),
-						'author'          => __( 'Author', 'mb-custom-taxonomy' ),
-						'thumbnail'       => __( 'Thumbnail', 'mb-custom-taxonomy' ),
-						'excerpt'         => __( 'Excerpt', 'mb-custom-taxonomy' ),
-						'trackbacks'      => __( 'Trackbacks', 'mb-custom-taxonomy' ),
-						'comments'        => __( 'Comments', 'mb-custom-taxonomy' ),
-						'revisions'       => __( 'Revisions', 'mb-custom-taxonomy' ),
-						'page-attributes' => __( 'Page Attributes', 'mb-custom-taxonomy' ),
-					),
-					'std'     => array( 'title', 'editor', 'thumbnail' ),
+					'options' => $options,
 				),
 			),
 		);
@@ -391,13 +373,13 @@ class MB_Custom_Taxonomy_Edit
 			$html  = preg_replace( '/value="(.*?)"/', 'value="{{labels.' . $model . '}}"', $html );
 		}
 		// Slug
-		elseif ( 'args_post_type' == $field['id'] )
+		elseif ( 'args_taxonomy' == $field['id'] )
 		{
 			$html = str_replace( '>', sprintf(
-				' ng-model="post_type" ng-init="post_type=\'%s\'">',
+				' ng-model="taxonomy" ng-init="taxonomy=\'%s\'">',
 				$meta
 			), $html );
-			$html = preg_replace( '/value="(.*?)"/', 'value="{{post_type}}"', $html );
+			$html = preg_replace( '/value="(.*?)"/', 'value="{{taxonomy}}"', $html );
 		}
 		return $html;
 	}

@@ -1,4 +1,4 @@
-/* global jQuery, angular, MBPostTypeLabels */
+/* global jQuery, angular, MBTaxonomyLabels */
 
 (function ( $, angular )
 {
@@ -42,26 +42,29 @@
 		{
 			var params = [
 					'menu_name',
-					'name_admin_bar',
 					'all_items',
-					'add_new',
-					'add_new_item',
 					'edit_item',
-					'new_item',
 					'view_item',
+					'update_item',
+					'add_new_item',
+					'new_item_name',
+					'parent_item',
+					'parent_item_colon',
 					'search_items',
-					'not_found',
-					'not_found_in_trash',
-					'parent_item_colon'
+					'popular_items',
+					'separate_items_with_commas',
+					'add_or_remove_items',
+					'choose_from_most_used',
+					'not_found'
 				],
 				i = params.length;
 			for ( ; i--; )
 			{
-				$scope.labels[params[i]] = MBPostTypeLabels[params[i]].replace( '%name%', $scope.labels.name ).replace( '%singular_name%', $scope.labels.singular_name );
+				$scope.labels[params[i]] = MBTaxonomyLabels[params[i]].replace( '%name%', $scope.labels.name ).replace( '%singular_name%', $scope.labels.singular_name );
 			}
 
 			// Update slug
-			$scope.post_type = stringToSlug( $scope.labels.singular_name );
+			$scope.taxonomy = stringToSlug( $scope.labels.singular_name );
 		};
 	}] );
 

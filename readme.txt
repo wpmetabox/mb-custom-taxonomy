@@ -1,5 +1,5 @@
 === MB Custom Taxonomy ===
-Contributors: rilwis, duc88b, fitwp
+Contributors: rilwis, fitwp
 Donate link: http://www.deluxeblogtips.com/donate
 Tags: cms, custom, custom taxonomies, custom taxonomy, post, taxonomy, taxonomies
 Requires at least: 4.3
@@ -13,13 +13,11 @@ Create and manage custom taxonomies with an easy-to-use interface in WordPress.
 
 **MB Custom Taxonomy** helps you to create and manage custom taxonomies easily in WordPress by providing an easy-to-use interface in the admin area.
 
-The plugin allows you to handle all taxonomy's arguments such as menu labels, admin bar label, exclude from search, disable archive page, etc. just in minutes. You don't need to write custom PHP code to register custom taxonomies anymore (using function `register_post_type()`).
+The plugin allows you to handle all taxonomy's arguments such as menu labels, admin bar label, exclude from search, disable archive page, etc. just in minutes. You don't need to write custom PHP code to register custom taxonomies anymore (using function `register_taxonomy()`).
 
 Using MB Custom Taxonomy, you will be able to craft the WordPress admin and turn it into a professional Content Management Systems.
 
-**Video demo**:
-
-https://www.youtube.com/watch?v=KG_8MF9xw6E&rel=0
+Consider using [MB Custom Post Type](https://wordpress.org/plugins/mb-custom-post-type/) to create and manage custom post types with similar interface.
 
 ### Features
 

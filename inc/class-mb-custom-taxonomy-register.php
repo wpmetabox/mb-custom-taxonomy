@@ -14,12 +14,12 @@
 class MB_Custom_Taxonomy_Register
 {
 	/**
-	 * Initiating
+	 * Initializing
 	 */
 	public function __construct()
 	{
 		// Register taxonomies
-		add_action( 'init', array( $this, 'register_post_types' ), 0 );
+		add_action( 'init', array( $this, 'register_post_types' ) );
 
 		// Change the output of post/bulk post updated messages
 		add_filter( 'post_updated_messages', array( $this, 'updated_message' ), 10, 1 );
@@ -28,7 +28,6 @@ class MB_Custom_Taxonomy_Register
 
 	/**
 	 * Register custom post type for taxonomies
-	 * @return void
 	 */
 	public function register_post_types()
 	{
@@ -63,6 +62,13 @@ class MB_Custom_Taxonomy_Register
 			'query_var'    => false,
 		);
 		register_post_type( 'mb-taxonomy', $args );
+
+		// Get all registered custom taxonomies
+		$taxonomies = $this->get_taxonomies();
+		foreach ( $taxonomies as $taxonomy => $args )
+		{
+			register_taxonomy( $taxonomy, $args['post_types'], $args );
+		}
 	}
 
 	/**
@@ -109,7 +115,7 @@ class MB_Custom_Taxonomy_Register
 				}
 			}
 
-			$taxonomies[] = $this->set_up_taxonomy( $labels, $args );
+			$taxonomies[$args['taxonomy']] = $this->set_up_taxonomy( $labels, $args );
 		}
 
 		return $taxonomies;
@@ -124,46 +130,29 @@ class MB_Custom_Taxonomy_Register
 	 */
 	public function set_up_taxonomy( $labels = array(), $args = array() )
 	{
-		// Default labels
-		$default_labels = array(
-			'menu_name'          => $labels['name'],
-			'name_admin_bar'     => $labels['singular_name'],
-			'add_new'            => __( 'Add New', 'mb-custom-taxonomy' ),
-			'add_new_item'       => sprintf( __( 'Add New %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			'new_item'           => sprintf( __( 'New %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			'edit_item'          => sprintf( __( 'Edit %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			'view_item'          => sprintf( __( 'View %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			'update_item'        => sprintf( __( 'Update %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			'all_items'          => sprintf( __( 'All %s', 'mb-custom-taxonomy' ), $labels['name'] ),
-			'search_items'       => sprintf( __( 'Search %s', 'mb-custom-taxonomy' ), $labels['name'] ),
-			'parent_item_colon'  => sprintf( __( 'Parent %s:', 'mb-custom-taxonomy' ), $labels['name'] ),
-			'not_found'          => sprintf( __( 'No %s found.', 'mb-custom-taxonomy' ), $labels['name'] ),
-			'not_found_in_trash' => sprintf( __( 'No %s found in Trash.', 'mb-custom-taxonomy' ), $labels['name'] ),
-		);
-
-		$labels = wp_parse_args( $labels, $default_labels );
-
-		// Default arguments
-		$default_args = array(
-			'labels'              => $labels,
-			'description'         => sprintf( __( '%s GUI', 'mb-custom-taxonomy' ), $labels['name'] ),
-			'public'              => true,
-			'publicly_queryable'  => true,
-			'show_ui'             => true,
-			'show_in_menu'        => true,
-			'query_var'           => true,
-			'rewrite'             => array( 'slug' => $args['post_type'] ),
-			'capability_type'     => 'post',
-			'hierarchical'        => false,
-			'menu_position'       => null,
-			'menu_icon'           => 'dashicons-admin-appearance',
-			'has_archive'         => true,
-			'can_export'          => true,
-			'show_in_nav_menus'   => true,
-			'exclude_from_search' => false,
-		);
-
-		$args = wp_parse_args( $args, $default_args );
+		$labels = wp_parse_args( $labels, array(
+			'menu_name'                  => $labels['name'],
+			'all_items'                  => sprintf( __( 'All %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+			'edit_item'                  => sprintf( __( 'Edit %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			'view_item'                  => sprintf( __( 'View %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			'update_item'                => sprintf( __( 'Update %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			'add_new_item'               => sprintf( __( 'Add new %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			'new_item_name'              => sprintf( __( 'New %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			'parent_item'                => sprintf( __( 'Parent %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			'parent_item_colon'          => sprintf( __( 'Parent %s:', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			'search_items'               => sprintf( __( 'Search %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+			'popular_items'              => sprintf( __( 'Popular %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+			'separate_items_with_commas' => sprintf( __( 'Separate %s with commas', 'mb-custom-taxonomy' ), $labels['name'] ),
+			'add_or_remove_items'        => sprintf( __( 'Add or remove %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+			'choose_from_most_used'      => sprintf( __( 'Choose most used %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+			'not_found'                  => sprintf( __( 'No %s found', 'mb-custom-taxonomy' ), $labels['name'] ),
+		) );
+		$args   = wp_parse_args( $args, array(
+			'label'  => $labels['name'],
+			'labels' => $labels,
+			'public' => true,
+		) );
+		unset( $args['taxonomy'] );
 		return $args;
 	}
 
