@@ -24,10 +24,12 @@ This plugin is a free extension of [Meta Box](https://metabox.io) plugin, which 
 
 You need to install [Meta Box](https://metabox.io) plugin first
 
-- Go to Plugins | Add New and search for Meta Box
-- Click Install to install the plugin
+- Go to **Plugins | Add New** and search for **Meta Box**
+- Click **Install Now** button to install the plugin
+- After installing, click **Activate Plugin** to activate the plugin
 
 Install **MB Custom Taxonomy** extension
 
 - Go to **Plugins | Add New** and search for **MB Custom Taxonomy**
-- Click **Install** to install the plugin
+- Click **Install Now** button to install the plugin
+- After installing, click **Activate Plugin** to activate the plugin
