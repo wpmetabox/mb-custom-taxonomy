@@ -1,5 +1,5 @@
 === MB Custom Taxonomy ===
-Contributors: rilwis, fitwp
+Contributors: metabox, rilwis, fitwp
 Donate link: http://www.deluxeblogtips.com/donate
 Tags: cms, custom, custom taxonomies, custom taxonomy, post, taxonomy, taxonomies
 Requires at least: 4.3

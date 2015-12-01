@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: MB Custom Taxonomy
- * Plugin URI: https://www.metabox.io/plugins/custom-taxonomy/
+ * Plugin URI: https://metabox.io/plugins/custom-taxonomy/
  * Description: Create custom taxonomies with easy-to-use UI
  * Version: 1.0.0
  * Author: Rilwis
@@ -13,24 +13,67 @@
 // Prevent loading this file directly
 defined( 'ABSPATH' ) || exit;
 
-// Plugin constants
-define( 'MB_CUSTOM_TAXONOMY_URL', plugin_dir_url( __FILE__ ) );
-define( 'MB_CUSTOM_TAXONOMY_DIR', plugin_dir_path( __FILE__ ) );
+add_action( 'init', 'mb_custom_taxonomy_load', 0 );
 
-if ( is_admin() )
+/**
+ * Dependent plugin activation/deactivation
+ * @link https://gist.github.com/mathetos/7161f6a88108aaede32a
+ */
+function mb_custom_taxonomy_load()
 {
-	require_once MB_CUSTOM_TAXONOMY_DIR . 'inc/required-plugin.php';
-	require_once MB_CUSTOM_TAXONOMY_DIR . 'inc/class-mb-custom-taxonomy-register.php';
-	require_once MB_CUSTOM_TAXONOMY_DIR . 'inc/class-mb-custom-taxonomy-edit.php';
-	new MB_Custom_Taxonomy_Register;
-	new MB_Custom_Taxonomy_Edit;
+	// If Meta Box is NOT active
+	if ( current_user_can( 'activate_plugins' ) && ! class_exists( 'RW_Meta_Box' ) )
+	{
+		add_action( 'admin_init', 'mb_custom_taxonomy_deactivate' );
+		add_action( 'admin_notices', 'mb_custom_taxonomy_admin_notice' );
+	}
+	else
+	{
+		mb_custom_taxonomy_load_textdomain();
+
+		if ( is_admin() )
+		{
+			// Plugin constants
+			define( 'MB_CUSTOM_TAXONOMY_URL', plugin_dir_url( __FILE__ ) );
+
+			require_once plugin_dir_path( __FILE__ ) . 'inc/class-mb-custom-taxonomy-register.php';
+			require_once plugin_dir_path( __FILE__ ) . 'inc/class-mb-custom-taxonomy-edit.php';
+
+			new MB_Custom_Taxonomy_Register;
+			new MB_Custom_Taxonomy_Edit;
+		}
+	}
 }
 
-add_action( 'plugins_loaded', 'mb_custom_taxonomy_load_textdomain' );
+/**
+ * Deactivate plugin
+ */
+function mb_custom_taxonomy_deactivate()
+{
+	deactivate_plugins( plugin_basename( __FILE__ ) );
+}
+
+/**
+ * Show admin notice when Meta Box is not activated
+ */
+function mb_custom_taxonomy_admin_notice()
+{
+	$child  = __( 'MB Custom Taxonomy', 'mb-custom-taxonomy' );
+	$parent = __( 'Meta Box', 'mb-custom-taxonomy' );
+	printf(
+		'<div class="error"><p>' . esc_html__( '%1$s requires %2$s to function correctly. Please activate %2$s before activating %1$s. For now, the plug-in has been deactivated.', 'mb-custom-taxonomy' ) . '</p></div>',
+		'<strong>' . $child . '</strong>',
+		'<strong>' . $parent . '</strong>'
+	);
+
+	if ( isset( $_GET['activate'] ) )
+	{
+		unset( $_GET['activate'] );
+	}
+}
 
 /**
  * Load plugin textdomain
- * @return void
  */
 function mb_custom_taxonomy_load_textdomain()
 {
