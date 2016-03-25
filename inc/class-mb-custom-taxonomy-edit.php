@@ -317,8 +317,8 @@ class MB_Custom_Taxonomy_Edit
 
 		// Post types
 		$options    = array();
-		$post_types = get_post_types( array( '_builtin' => false ), 'objects' );
-		unset( $post_types['mb-taxonomy'] );
+		$post_types = get_post_types( '', 'objects' );
+		unset( $post_types['mb-taxonomy'], $post_types['revision'], $post_types['nav_menu_item'] );
 		foreach ( $post_types as $post_type => $post_type_object )
 		{
 			$options[$post_type] = $post_type_object->labels->singular_name;

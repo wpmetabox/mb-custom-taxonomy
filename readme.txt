@@ -3,8 +3,8 @@ Contributors: metabox, rilwis, fitwp
 Donate link: http://www.deluxeblogtips.com/donate
 Tags: cms, custom, custom taxonomies, custom taxonomy, post, taxonomy, taxonomies
 Requires at least: 4.3
-Tested up to: 4.3.1
-Stable tag: 1.0.0
+Tested up to: 4.4.2
+Stable tag: 1.0.1
 License: GPLv2 or later
 
 Create and manage custom taxonomies with an easy-to-use interface in WordPress.
@@ -55,6 +55,10 @@ Install **MB Custom Taxonomy** extension
 2. Edit custom taxonomy
 
 == Changelog ==
+
+= 1.0.1 =
+
+- Fix: Custom taxonomies now can be added to 'post', 'page', 'attachment'
 
 = 1.0.0 =
 
