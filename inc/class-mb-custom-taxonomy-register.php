@@ -11,17 +11,15 @@
 /**
  * Controls all operations for registering custom taxonomy.
  */
-class MB_Custom_Taxonomy_Register
-{
+class MB_Custom_Taxonomy_Register {
 	/**
 	 * Initializing
 	 */
-	public function __construct()
-	{
-		// Register taxonomies
-		add_action( 'init', array( $this, 'register_post_types' ) );
+	public function __construct() {
+		// Register taxonomies.
+		add_action( 'init', array( $this, 'register' ) );
 
-		// Change the output of post/bulk post updated messages
+		// Change the output of post/bulk post updated messages.
 		add_filter( 'post_updated_messages', array( $this, 'updated_message' ), 10, 1 );
 		add_filter( 'bulk_post_updated_messages', array( $this, 'bulk_updated_messages' ), 10, 2 );
 	}
@@ -29,9 +27,8 @@ class MB_Custom_Taxonomy_Register
 	/**
 	 * Register custom post type for taxonomies
 	 */
-	public function register_post_types()
-	{
-		// Register post type of the plugin 'mb-taxonomy'
+	public function register() {
+		// Register post type of the plugin 'mb-taxonomy'.
 		$labels = array(
 			'name'               => _x( 'Taxonomies', 'Taxonomy General Name', 'mb-custom-taxonomy' ),
 			'singular_name'      => _x( 'Taxonomy', 'Taxonomy Singular Name', 'mb-custom-taxonomy' ),
@@ -63,59 +60,53 @@ class MB_Custom_Taxonomy_Register
 		);
 		register_post_type( 'mb-taxonomy', $args );
 
-		// Get all registered custom taxonomies
+		// Get all registered custom taxonomies.
 		$taxonomies = $this->get_taxonomies();
-		foreach ( $taxonomies as $taxonomy => $args )
-		{
+		foreach ( $taxonomies as $taxonomy => $args ) {
 			register_taxonomy( $taxonomy, $args['post_types'], $args );
 		}
 	}
 
 	/**
-	 * Get all registered taxonomies
+	 * Get all registered taxonomies.
+	 *
 	 * @return array
 	 */
-	public function get_taxonomies()
-	{
-		// This array stores all registered custom taxonomies
+	public function get_taxonomies() {
+		// This array stores all registered custom taxonomies.
 		$taxonomies = array();
 
-		// Get all post where where post_type = mb-taxonomy
+		// Get all post where where post_type = mb-taxonomy.
 		$mb_taxonomies = get_posts( array(
 			'posts_per_page' => - 1,
 			'post_status'    => 'publish',
 			'post_type'      => 'mb-taxonomy',
 		) );
 
-		foreach ( $mb_taxonomies as $taxonomy )
-		{
-			// Get all post meta from current post
+		foreach ( $mb_taxonomies as $taxonomy ) {
+			// Get all post meta from current post.
 			$post_meta = get_post_meta( $taxonomy->ID );
-			// Create array that contains Labels of this current custom taxonomy
+			// Create array that contains Labels of this current custom taxonomy.
 			$labels = array();
-			// Create array that contains arguments of this current custom taxonomy
+			// Create array that contains arguments of this current custom taxonomy.
 			$args = array();
 
-			foreach ( $post_meta as $key => $value )
-			{
-				// If post meta has prefix 'label' then add it to $labels
-				if ( false !== strpos( $key, 'label' ) )
-				{
-					$data = 1 == count( $value ) ? $value[0] : $value;
+			foreach ( $post_meta as $key => $value ) {
+				// If post meta has prefix 'label' then add it to $labels.
+				if ( false !== strpos( $key, 'label' ) ) {
+					$data = 1 === count( $value ) ? $value[0] : $value;
 
-					$labels[str_replace( 'label_', '', $key )] = $data;
-				}
-				// If post meta has prefix 'args' then add it to $args
-				elseif ( false !== strpos( $key, 'args' ) )
-				{
-					$data = 1 == count( $value ) ? $value[0] : $value;
-					$data = is_numeric( $data ) ? ( 1 == intval( $data ) ? true : false ) : $data;
+					$labels[ str_replace( 'label_', '', $key ) ] = $data;
+				} // If post meta has prefix 'args' then add it to $args
+				elseif ( false !== strpos( $key, 'args' ) ) {
+					$data = 1 === count( $value ) ? $value[0] : $value;
+					$data = is_numeric( $data ) ? ( 1 === intval( $data ) ? true : false ) : $data;
 
-					$args[str_replace( 'args_', '', $key )] = $data;
+					$args[ str_replace( 'args_', '', $key ) ] = $data;
 				}
 			}
 
-			$taxonomies[$args['taxonomy']] = $this->set_up_taxonomy( $labels, $args );
+			$taxonomies[ $args['taxonomy'] ] = $this->set_up_taxonomy( $labels, $args );
 		}
 
 		return $taxonomies;
@@ -124,12 +115,12 @@ class MB_Custom_Taxonomy_Register
 	/**
 	 * Setup labels, arguments for a custom taxonomy
 	 *
-	 * @param array $labels
-	 * @param array $args
+	 * @param array $labels Taxonomy labels.
+	 * @param array $args   Taxonomy parameters.
+	 *
 	 * @return array
 	 */
-	public function set_up_taxonomy( $labels = array(), $args = array() )
-	{
+	public function set_up_taxonomy( $labels = array(), $args = array() ) {
 		$labels = wp_parse_args( $labels, array(
 			'menu_name'                  => $labels['name'],
 			'all_items'                  => sprintf( __( 'All %s', 'mb-custom-taxonomy' ), $labels['name'] ),
@@ -153,17 +144,18 @@ class MB_Custom_Taxonomy_Register
 			'public' => true,
 		) );
 		unset( $args['taxonomy'] );
+
 		return $args;
 	}
 
 	/**
 	 * Custom post updated messages
 	 *
-	 * @param array $messages
+	 * @param array $messages Post messages.
+	 *
 	 * @return array
 	 */
-	public function updated_message( $messages )
-	{
+	public function updated_message( $messages ) {
 		$post = get_post();
 
 		$messages['mb-taxonomy'] = array(
@@ -180,18 +172,19 @@ class MB_Custom_Taxonomy_Register
 			9  => sprintf( __( 'Taxonomy scheduled for: <strong>%s</strong>.', 'mb-custom-taxonomy' ), date_i18n( __( 'M j, Y @ G:i', 'mb-custom-taxonomy' ), strtotime( $post->post_date ) ) ),
 			10 => __( 'Taxonomy draft updated.', 'mb-custom-taxonomy' ),
 		);
+
 		return $messages;
 	}
 
 	/**
 	 * Custom post management WordPress messages
 	 *
-	 * @param array $bulk_messages
-	 * @param array $bulk_counts
+	 * @param array $bulk_messages Post bulk messages.
+	 * @param array $bulk_counts   Number of posts.
+	 *
 	 * @return array
 	 */
-	public function bulk_updated_messages( $bulk_messages, $bulk_counts )
-	{
+	public function bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 		$bulk_messages['mb-taxonomy'] = array(
 			'updated'   => sprintf( _n( '%s taxonomy updated.', '%s taxonomies updated.', $bulk_counts['updated'], 'mb-custom-taxonomy' ), $bulk_counts['updated'] ),
 			'locked'    => sprintf( _n( '%s taxonomy not updated, somebody is editing.', '%s taxonomies not updated, somebody is editing.', $bulk_counts['locked'], 'mb-custom-taxonomy' ), $bulk_counts['locked'] ),
@@ -199,6 +192,7 @@ class MB_Custom_Taxonomy_Register
 			'trashed'   => sprintf( _n( '%s taxonomy moved to the Trash.', '%s taxonomies moved to the Trash.', $bulk_counts['trashed'], 'mb-custom-taxonomy' ), $bulk_counts['trashed'] ),
 			'untrashed' => sprintf( _n( '%s taxonomy restored from the Trash.', '%s taxonomies restored from the Trash.', $bulk_counts['untrashed'], 'mb-custom-taxonomy' ), $bulk_counts['untrashed'] ),
 		);
+
 		return $bulk_messages;
 	}
 }

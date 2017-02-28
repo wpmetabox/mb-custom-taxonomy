@@ -10,41 +10,40 @@
 /**
  * Controls all operations for creating / modifying custom taxonomy.
  */
-class MB_Custom_Taxonomy_Edit
-{
+class MB_Custom_Taxonomy_Edit {
 	/**
-	 * @var bool Used to prevent duplicated calls like revisions, manual hook to wp_insert_post, etc.
+	 * Used to prevent duplicated calls like revisions, manual hook to wp_insert_post, etc.
+	 *
+	 * @var bool
 	 */
 	public $saved = false;
 
 	/**
 	 * Initiating. Add hooks.
 	 */
-	public function __construct()
-	{
-		// Enqueue scripts
+	public function __construct() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		// Add meta box
 		add_filter( 'rwmb_meta_boxes', array( $this, 'register_meta_boxes' ) );
-		// Modify post information after save post
+		// Modify post information after save post.
 		add_action( 'save_post_mb-taxonomy', array( $this, 'save_post' ) );
-		// Add ng-controller to form
+		// Add ng-controller to form.
 		add_action( 'post_edit_form_tag', array( $this, 'add_ng_controller' ) );
 	}
 
 	/**
 	 * Enqueue scripts and styles.
 	 */
-	public function enqueue_scripts()
-	{
-		if ( ! $this->is_screen() )
-		{
+	public function enqueue_scripts() {
+		if ( ! $this->is_screen() ) {
 			return;
 		}
 
 		wp_register_script( 'angular', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js', array(), '1.4.2', true );
 		wp_enqueue_style( 'mb-custom-taxonomy', MB_CUSTOM_TAXONOMY_URL . 'css/style.css', array(), '1.0.0', false );
-		wp_enqueue_script( 'mb-custom-taxonomy', MB_CUSTOM_TAXONOMY_URL . 'js/script.js', array( 'jquery', 'angular' ), '1.0.0', false );
+		wp_enqueue_script( 'mb-custom-taxonomy', MB_CUSTOM_TAXONOMY_URL . 'js/script.js', array(
+			'jquery',
+			'angular',
+		), '1.0.0', false );
 
 		$labels = array(
 			'menu_name'                  => '%name%',
@@ -67,13 +66,13 @@ class MB_Custom_Taxonomy_Edit
 	}
 
 	/**
-	 * Register meta boxes for add/edit mb-taxonomy page
+	 * Register meta boxes for add/edit mb-taxonomy page.
 	 *
-	 * @param array $meta_boxes
+	 * @param array $meta_boxes Meta boxes.
+	 *
 	 * @return array
 	 */
-	public function register_meta_boxes( $meta_boxes )
-	{
+	public function register_meta_boxes( $meta_boxes ) {
 		$label_prefix = 'label_';
 		$args_prefix  = 'args_';
 
@@ -238,6 +237,18 @@ class MB_Custom_Taxonomy_Edit
 				'desc' => __( 'Whether to allow automatic creation of taxonomy columns on associated post-types table.', 'mb-custom-taxonomy' ),
 			),
 			array(
+				'name' => __( 'Show in REST?', 'mb-custom-post-type' ),
+				'id'   => $args_prefix . 'show_in_rest',
+				'type' => 'checkbox',
+				'desc' => __( 'Whether to include the taxonomy in the REST API.', 'mb-custom-post-type' ),
+			),
+			array(
+				'name' => __( 'REST base', 'mb-custom-post-type' ),
+				'id'   => $args_prefix . 'rest_base',
+				'type' => 'checkbox',
+				'desc' => __( 'To change the base url of REST API route. Default is taxonomy slug.', 'mb-custom-post-type' ),
+			),
+			array(
 				'name' => __( 'Hierarchical?', 'mb-custom-taxonomy' ),
 				'id'   => $args_prefix . 'hierarchical',
 				'type' => 'checkbox',
@@ -258,7 +269,7 @@ class MB_Custom_Taxonomy_Edit
 			),
 		);
 
-		// Basic settings
+		// Basic settings.
 		$meta_boxes[] = array(
 			'id'         => 'basic-settings',
 			'title'      => __( 'Basic Settings', 'mb-custom-taxonomy' ),
@@ -295,11 +306,11 @@ class MB_Custom_Taxonomy_Edit
 					$args_prefix . 'post_type'      => array(
 						'required' => __( 'Slug is required', 'mb-custom-taxonomy' ),
 					),
-				)
+				),
 			),
 		);
 
-		// Labels settings
+		// Labels settings.
 		$meta_boxes[] = array(
 			'id'         => 'label-settings',
 			'title'      => __( 'Labels Settings', 'mb-custom-taxonomy' ),
@@ -307,7 +318,7 @@ class MB_Custom_Taxonomy_Edit
 			'fields'     => $labels_fields,
 		);
 
-		// Advanced settings
+		// Advanced settings.
 		$meta_boxes[] = array(
 			'id'         => 'advanced-settings',
 			'title'      => __( 'Advanced Settings', 'mb-custom-taxonomy' ),
@@ -315,13 +326,12 @@ class MB_Custom_Taxonomy_Edit
 			'fields'     => $advanced_fields,
 		);
 
-		// Post types
+		// Post types.
 		$options    = array();
 		$post_types = get_post_types( '', 'objects' );
 		unset( $post_types['mb-taxonomy'], $post_types['revision'], $post_types['nav_menu_item'] );
-		foreach ( $post_types as $post_type => $post_type_object )
-		{
-			$options[$post_type] = $post_type_object->labels->singular_name;
+		foreach ( $post_types as $post_type => $post_type_object ) {
+			$options[ $post_type ] = $post_type_object->labels->singular_name;
 		}
 		$meta_boxes[] = array(
 			'title'      => __( 'Assign To Post Types', 'mb-custom-taxonomy' ),
@@ -339,9 +349,8 @@ class MB_Custom_Taxonomy_Edit
 
 		$fields = array_merge( $basic_fields, $labels_fields, $advanced_fields );
 
-		// Add ng-model attribute to all fields
-		foreach ( $fields as $field )
-		{
+		// Add ng-model attribute to all fields.
+		foreach ( $fields as $field ) {
 			add_filter( 'rwmb_' . $field['id'] . '_html', array( $this, 'modify_field_html' ), 10, 3 );
 		}
 
@@ -351,57 +360,50 @@ class MB_Custom_Taxonomy_Edit
 	/**
 	 * Modify html output of field
 	 *
-	 * @param string $html
-	 * @param array  $field
-	 * @param string $meta
+	 * @param string $html  HTML out put of the field.
+	 * @param array  $field Field parameters.
+	 * @param string $meta  Meta value.
 	 *
 	 * @return string
 	 */
-	public function modify_field_html( $html, $field, $meta )
-	{
-		// Labels
-		if ( 0 === strpos( $field['id'], 'label_' ) )
-		{
+	public function modify_field_html( $html, $field, $meta ) {
+		// Labels.
+		if ( 0 === strpos( $field['id'], 'label_' ) ) {
 			$model = substr( $field['id'], 6 );
 			$html  = str_replace( '>', sprintf(
 				' ng-model="labels.%s" ng-init="labels.%s=\'%s\'"%s>',
 				$model,
 				$model,
 				$meta,
-				in_array( $model, array( 'name', 'singular_name' ) ) ? ' ng-change="updateLabels()"' : ''
+				in_array( $model, array( 'name', 'singular_name' ), true ) ? ' ng-change="updateLabels()"' : ''
 			), $html );
 			$html  = preg_replace( '/value="(.*?)"/', 'value="{{labels.' . $model . '}}"', $html );
-		}
-		// Slug
-		elseif ( 'args_taxonomy' == $field['id'] )
-		{
+		} // Slug
+		elseif ( 'args_taxonomy' === $field['id'] ) {
 			$html = str_replace( '>', sprintf(
 				' ng-model="taxonomy" ng-init="taxonomy=\'%s\'">',
 				$meta
 			), $html );
 			$html = preg_replace( '/value="(.*?)"/', 'value="{{taxonomy}}"', $html );
 		}
+
 		return $html;
 	}
 
 	/**
-	 * Modify post information and post meta after save post
+	 * Modify post information and post meta after save post.
 	 *
-	 * @param int $post_id
-	 *
-	 * @return void
+	 * @param int $post_id Post ID.
 	 */
-	public function save_post( $post_id )
-	{
+	public function save_post( $post_id ) {
 		// If label_singular_name is empty or if this function is called to prevent duplicated calls like revisions, manual hook to wp_insert_post, etc.
-		if ( empty( $_POST['label_singular_name'] ) || true === $this->saved )
-		{
+		if ( empty( $_POST['label_singular_name'] ) || true === $this->saved ) {
 			return;
 		}
 
 		$this->saved = true;
 
-		// Update post title
+		// Update post title.
 		$post = array(
 			'ID'         => $post_id,
 			'post_title' => $_POST['label_singular_name'],
@@ -409,28 +411,26 @@ class MB_Custom_Taxonomy_Edit
 
 		wp_update_post( $post );
 
-		// Flush rewrite rules after create new or edit taxonomies
+		// Flush rewrite rules after create new or edit taxonomies.
 		flush_rewrite_rules();
 	}
 
 	/**
 	 * Check if current screen is editing mb-taxonomy?
+	 *
 	 * @return boolean
 	 */
-	public function is_screen()
-	{
+	public function is_screen() {
 		$screen = get_current_screen();
+
 		return 'post' === $screen->base && 'mb-taxonomy' === $screen->post_type;
 	}
 
 	/**
 	 * Add angular controller to form tag.
-	 * @return void
 	 */
-	public function add_ng_controller()
-	{
-		if ( $this->is_screen() )
-		{
+	public function add_ng_controller() {
+		if ( $this->is_screen() ) {
 			echo 'ng-controller="TaxonomyController"';
 		}
 	}
