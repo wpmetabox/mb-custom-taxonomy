@@ -216,6 +216,12 @@ class MB_Custom_Taxonomy_Edit {
 				'std'  => 1,
 				'desc' => __( 'Whether taxonomy is available for selection in navigation menus.', 'mb-custom-taxonomy' ),
 			),
+                    	array(
+				'name' => __( 'Show in editor page?', 'mb-custom-taxonomy' ),
+				'id'   => $args_prefix . 'meta_box_cb',
+				'type' => 'checkbox',
+				'desc' => __( 'Whether to show the on the editor page.', 'mb-custom-taxonomy' ),
+			),
 			array(
 				'name' => __( 'Show tag cloud?', 'mb-custom-taxonomy' ),
 				'id'   => $args_prefix . 'show_tagcloud',
@@ -266,7 +272,7 @@ class MB_Custom_Taxonomy_Edit {
 				'id'   => $args_prefix . 'sort',
 				'type' => 'checkbox',
 				'desc' => __( 'Whether this taxonomy should remember the order in which terms are added to objects.', 'mb-custom-taxonomy' ),
-			),
+			)
 		);
 
 		// Basic settings.

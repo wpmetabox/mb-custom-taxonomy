@@ -63,6 +63,9 @@ class MB_Custom_Taxonomy_Register {
 		// Get all registered custom taxonomies.
 		$taxonomies = $this->get_taxonomies();
 		foreach ( $taxonomies as $taxonomy => $args ) {
+                        if (false !== $args['meta_box_cb']) {
+                            unset($args['meta_box_cb']);
+                        }
 			register_taxonomy( $taxonomy, $args['post_types'], $args );
 		}
 	}
