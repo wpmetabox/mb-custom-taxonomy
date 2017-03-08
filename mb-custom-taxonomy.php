@@ -3,7 +3,7 @@
  * Plugin Name: MB Custom Taxonomy
  * Plugin URI: https://metabox.io/plugins/custom-taxonomy/
  * Description: Create custom taxonomies with easy-to-use UI
- * Version: 1.1
+ * Version: 1.1.1
  * Author: Anh Tran
  * Author URI: http://www.deluxeblogtips.com
  * License: GPL-2.0+

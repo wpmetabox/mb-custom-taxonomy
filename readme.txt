@@ -3,8 +3,8 @@ Contributors: metabox, rilwis, fitwp
 Donate link: http://www.deluxeblogtips.com/donate
 Tags: cms, custom, custom taxonomies, custom taxonomy, post, taxonomy, taxonomies
 Requires at least: 4.3
-Tested up to: 4.7.2
-Stable tag: 1.1
+Tested up to: 4.7.3
+Stable tag: 1.1.1
 License: GPLv2 or later
 
 Create and manage custom taxonomies with an easy-to-use interface in WordPress.

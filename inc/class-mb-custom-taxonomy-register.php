@@ -4,8 +4,6 @@
  *
  * @package    Meta Box
  * @subpackage MB Custom Taxonomy
- * @author     Doan Manh Duc
- * @author     Tran Ngoc Tuan Anh
  */
 
 /**
@@ -63,9 +61,9 @@ class MB_Custom_Taxonomy_Register {
 		// Get all registered custom taxonomies.
 		$taxonomies = $this->get_taxonomies();
 		foreach ( $taxonomies as $taxonomy => $args ) {
-                        if (false !== $args['meta_box_cb']) {
-                            unset($args['meta_box_cb']);
-                        }
+			if ( false !== $args['meta_box_cb'] ) {
+				unset( $args['meta_box_cb'] );
+			}
 			register_taxonomy( $taxonomy, $args['post_types'], $args );
 		}
 	}
