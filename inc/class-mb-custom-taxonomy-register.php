@@ -93,13 +93,15 @@ class MB_Custom_Taxonomy_Register {
 			$args = array();
 
 			foreach ( $post_meta as $key => $value ) {
-				// If post meta has prefix 'label' then add it to $labels.
 				if ( false !== strpos( $key, 'label' ) ) {
+					// If post meta has prefix 'label' then add it to $labels.
+					// @codingStandardsIgnoreLine
 					$data = 1 === count( $value ) ? $value[0] : $value;
 
 					$labels[ str_replace( 'label_', '', $key ) ] = $data;
-				} // If post meta has prefix 'args' then add it to $args
-				elseif ( false !== strpos( $key, 'args' ) ) {
+				} elseif ( false !== strpos( $key, 'args' ) ) {
+					// If post meta has prefix 'args' then add it to $args.
+					// @codingStandardsIgnoreLine
 					$data = 1 === count( $value ) ? $value[0] : $value;
 					$data = is_numeric( $data ) ? ( 1 === intval( $data ) ? true : false ) : $data;
 
@@ -124,19 +126,33 @@ class MB_Custom_Taxonomy_Register {
 	public function set_up_taxonomy( $labels = array(), $args = array() ) {
 		$labels = wp_parse_args( $labels, array(
 			'menu_name'                  => $labels['name'],
+			// translators: %s: Name of the taxonomy in plural form.
 			'all_items'                  => sprintf( __( 'All %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+			// translators: %s: Name of the taxonomy in singular form.
 			'edit_item'                  => sprintf( __( 'Edit %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			// translators: %s: Name of the taxonomy in singular form.
 			'view_item'                  => sprintf( __( 'View %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			// translators: %s: Name of the taxonomy in singular form.
 			'update_item'                => sprintf( __( 'Update %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			// translators: %s: Name of the taxonomy in singular form.
 			'add_new_item'               => sprintf( __( 'Add new %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			// translators: %s: Name of the taxonomy in singular form.
 			'new_item_name'              => sprintf( __( 'New %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			// translators: %s: Name of the taxonomy in singular form.
 			'parent_item'                => sprintf( __( 'Parent %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			// translators: %s: Name of the taxonomy in singular form.
 			'parent_item_colon'          => sprintf( __( 'Parent %s:', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+			// translators: %s: Name of the taxonomy in plural form.
 			'search_items'               => sprintf( __( 'Search %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+			// translators: %s: Name of the taxonomy in plural form.
 			'popular_items'              => sprintf( __( 'Popular %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+			// translators: %s: Name of the taxonomy in plural form.
 			'separate_items_with_commas' => sprintf( __( 'Separate %s with commas', 'mb-custom-taxonomy' ), $labels['name'] ),
+			// translators: %s: Name of the taxonomy in plural form.
 			'add_or_remove_items'        => sprintf( __( 'Add or remove %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+			// translators: %s: Name of the taxonomy in plural form.
 			'choose_from_most_used'      => sprintf( __( 'Choose most used %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+			// translators: %s: Name of the taxonomy in plural form.
 			'not_found'                  => sprintf( __( 'No %s found', 'mb-custom-taxonomy' ), $labels['name'] ),
 		) );
 		$args   = wp_parse_args( $args, array(
@@ -157,7 +173,8 @@ class MB_Custom_Taxonomy_Register {
 	 * @return array
 	 */
 	public function updated_message( $messages ) {
-		$post = get_post();
+		$post     = get_post();
+		$revision = filter_input( INPUT_GET, 'revision', FILTER_SANITIZE_NUMBER_INT );
 
 		$messages['mb-taxonomy'] = array(
 			0  => '', // Unused. Messages start at index 1.
@@ -165,11 +182,12 @@ class MB_Custom_Taxonomy_Register {
 			2  => __( 'Custom field updated.', 'mb-custom-taxonomy' ),
 			3  => __( 'Custom field deleted.', 'mb-custom-taxonomy' ),
 			4  => __( 'Taxonomy updated.', 'mb-custom-taxonomy' ),
-			/* translators: %s: date and time of the revision */
-			5  => isset( $_GET['revision'] ) ? sprintf( __( 'Taxonomy restored to revision from %s.', 'mb-custom-taxonomy' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			// translators: %s: Date and time of the revision.
+			5  => $revision ? sprintf( __( 'Taxonomy restored to revision from %s.', 'mb-custom-taxonomy' ), wp_post_revision_title( $revision, false ) ) : false,
 			6  => __( 'Taxonomy published.', 'mb-custom-taxonomy' ),
 			7  => __( 'Taxonomy saved.', 'mb-custom-taxonomy' ),
 			8  => __( 'Taxonomy submitted.', 'mb-custom-taxonomy' ),
+			// translators: %s: Date and time of the revision.
 			9  => sprintf( __( 'Taxonomy scheduled for: <strong>%s</strong>.', 'mb-custom-taxonomy' ), date_i18n( __( 'M j, Y @ G:i', 'mb-custom-taxonomy' ), strtotime( $post->post_date ) ) ),
 			10 => __( 'Taxonomy draft updated.', 'mb-custom-taxonomy' ),
 		);
@@ -187,10 +205,15 @@ class MB_Custom_Taxonomy_Register {
 	 */
 	public function bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 		$bulk_messages['mb-taxonomy'] = array(
+			// translators: %s: Name of the taxonomy in singular and plural form.
 			'updated'   => sprintf( _n( '%s taxonomy updated.', '%s taxonomies updated.', $bulk_counts['updated'], 'mb-custom-taxonomy' ), $bulk_counts['updated'] ),
+			// translators: %s: Name of the taxonomy in singular and plural form.
 			'locked'    => sprintf( _n( '%s taxonomy not updated, somebody is editing.', '%s taxonomies not updated, somebody is editing.', $bulk_counts['locked'], 'mb-custom-taxonomy' ), $bulk_counts['locked'] ),
+			// translators: %s: Name of the taxonomy in singular and plural form.
 			'deleted'   => sprintf( _n( '%s taxonomy permanently deleted.', '%s taxonomies permanently deleted.', $bulk_counts['deleted'], 'mb-custom-taxonomy' ), $bulk_counts['deleted'] ),
+			// translators: %s: Name of the taxonomy in singular and plural form.
 			'trashed'   => sprintf( _n( '%s taxonomy moved to the Trash.', '%s taxonomies moved to the Trash.', $bulk_counts['trashed'], 'mb-custom-taxonomy' ), $bulk_counts['trashed'] ),
+			// translators: %s: Name of the taxonomy in singular and plural form.
 			'untrashed' => sprintf( _n( '%s taxonomy restored from the Trash.', '%s taxonomies restored from the Trash.', $bulk_counts['untrashed'], 'mb-custom-taxonomy' ), $bulk_counts['untrashed'] ),
 		);
 

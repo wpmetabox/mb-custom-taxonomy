@@ -45,6 +45,7 @@ class MB_Custom_Taxonomy_Edit {
 			'angular',
 		), '1.0.0', false );
 
+		// @codingStandardsIgnoreStart
 		$labels = array(
 			'menu_name'                  => '%name%',
 			'all_items'                  => __( 'All %name%', 'mb-custom-taxonomy' ),
@@ -62,6 +63,7 @@ class MB_Custom_Taxonomy_Edit {
 			'choose_from_most_used'      => __( 'Choose most used %name%', 'mb-custom-taxonomy' ),
 			'not_found'                  => __( 'No %name% found', 'mb-custom-taxonomy' ),
 		);
+		// @codingStandardsIgnoreEnd
 		wp_localize_script( 'mb-custom-taxonomy', 'MBTaxonomyLabels', $labels );
 	}
 
@@ -385,8 +387,7 @@ class MB_Custom_Taxonomy_Edit {
 				in_array( $model, array( 'name', 'singular_name' ), true ) ? ' ng-change="updateLabels()"' : ''
 			), $html );
 			$html  = preg_replace( '/value="(.*?)"/', 'value="{{labels.' . $model . '}}"', $html );
-		} // Slug
-		elseif ( 'args_taxonomy' === $field['id'] ) {
+		} elseif ( 'args_taxonomy' === $field['id'] ) {
 			$html = str_replace( '>', sprintf(
 				' ng-model="taxonomy" ng-init="taxonomy=\'%s\'">',
 				$meta
@@ -403,8 +404,10 @@ class MB_Custom_Taxonomy_Edit {
 	 * @param int $post_id Post ID.
 	 */
 	public function save_post( $post_id ) {
+		$singular = filter_input( INPUT_POST, 'label_singular_name', FILTER_SANITIZE_STRING );
+
 		// If label_singular_name is empty or if this function is called to prevent duplicated calls like revisions, manual hook to wp_insert_post, etc.
-		if ( empty( $_POST['label_singular_name'] ) || true === $this->saved ) {
+		if ( ! $singular || true === $this->saved ) {
 			return;
 		}
 
@@ -413,7 +416,7 @@ class MB_Custom_Taxonomy_Edit {
 		// Update post title.
 		$post = array(
 			'ID'         => $post_id,
-			'post_title' => $_POST['label_singular_name'],
+			'post_title' => $singular,
 		);
 
 		wp_update_post( $post );

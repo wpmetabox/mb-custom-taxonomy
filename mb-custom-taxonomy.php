@@ -60,6 +60,7 @@ function mb_custom_taxonomy_admin_notice() {
 	$child  = __( 'MB Custom Taxonomy', 'mb-custom-taxonomy' );
 	$parent = __( 'Meta Box', 'mb-custom-taxonomy' );
 	printf(
+		// translators: %1$s is the plugin name, %2$s is the Meta Box plugin name.
 		'<div class="error"><p>' . esc_html__( '%1$s requires %2$s to function correctly. Please activate %2$s before activating %1$s. For now, the plug-in has been deactivated.', 'mb-custom-taxonomy' ) . '</p></div>',
 		'<strong>' . esc_html( $child ) . '</strong>',
 		'<strong>' . esc_html( $parent ) . '</strong>'
