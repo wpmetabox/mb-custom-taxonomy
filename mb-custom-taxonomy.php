@@ -38,11 +38,15 @@ function mb_custom_taxonomy_load() {
 	load_plugin_textdomain( 'mb-custom-taxonomy' );
 
 	require_once plugin_dir_path( __FILE__ ) . 'inc/class-mb-custom-taxonomy-register.php';
-	new MB_Custom_Taxonomy_Register;
+	$register = new MB_Custom_Taxonomy_Register;
 
 	if ( is_admin() ) {
 		require_once plugin_dir_path( __FILE__ ) . 'inc/class-mb-custom-taxonomy-edit.php';
-		new MB_Custom_Taxonomy_Edit;
+		require_once plugin_dir_path( __FILE__ ) . 'inc/interfaces/encoder.php';
+		require_once plugin_dir_path( __FILE__ ) . 'inc/encoders/taxonomy-encoder.php';
+
+		$tax_encoder = new MB_CPT_Taxonomy_Encoder();
+		new MB_Custom_Taxonomy_Edit( $register, $tax_encoder );
 	}
 }
 

@@ -19,9 +19,29 @@ class MB_Custom_Taxonomy_Edit {
 	public $saved = false;
 
 	/**
-	 * Initiating. Add hooks.
+	 * Taxonomy register object.
+	 *
+	 * @var MB_Custom_Taxonomy_Register
 	 */
-	public function __construct() {
+	protected $register;
+
+	/**
+	 * Encoder object.
+	 *
+	 * @var MB_CPT_Encoder_Interface
+	 */
+	protected $encoder;
+
+	/**
+	 * Class MB_Custom_Taxonomy_Edit constructor.
+	 *
+	 * @param MB_Custom_Taxonomy_Register $register Post type register object.
+	 * @param MB_CPT_Encoder_Interface    $encoder  Encoder object.
+	 */
+	public function __construct( MB_Custom_Taxonomy_Register $register, MB_CPT_Encoder_Interface $encoder ) {
+		$this->register = $register;
+		$this->encoder = $encoder;
+
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_filter( 'rwmb_meta_boxes', array( $this, 'register_meta_boxes' ) );
 		// Modify post information after save post.
@@ -38,12 +58,18 @@ class MB_Custom_Taxonomy_Edit {
 			return;
 		}
 
-		wp_register_script( 'angular', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js', array(), '1.4.2', true );
+		wp_enqueue_style( 'highlightjs', MB_CUSTOM_TAXONOMY_URL . 'css/monokai-sublime.css', array(), '9.11.0', false );
 		wp_enqueue_style( 'mb-custom-taxonomy', MB_CUSTOM_TAXONOMY_URL . 'css/style.css', array(), '1.0.0', false );
-		wp_enqueue_script( 'mb-custom-taxonomy', MB_CUSTOM_TAXONOMY_URL . 'js/script.js', array(
-			'jquery',
-			'angular',
-		), '1.0.0', false );
+
+		wp_enqueue_script( 'angular', MB_CUSTOM_TAXONOMY_URL . 'js/angular.min.js', array(), '1.4.2', true );
+		wp_enqueue_script( 'highlightjs', MB_CUSTOM_TAXONOMY_URL . 'js/highlight.pack.js', array(), '9.11.0', true );
+
+		if ( ! wp_script_is( 'mb-cpt', 'enqueued' ) ) {
+			wp_enqueue_script( 'mb-custom-taxonomy', MB_CUSTOM_TAXONOMY_URL . 'js/script.js', array(
+				'jquery',
+				'angular',
+			), '1.0.0', false );
+		}
 
 		// @codingStandardsIgnoreStart
 		$labels = array(
@@ -65,6 +91,9 @@ class MB_Custom_Taxonomy_Edit {
 		);
 		// @codingStandardsIgnoreEnd
 		wp_localize_script( 'mb-custom-taxonomy', 'MBTaxonomyLabels', $labels );
+
+		$scripts = 'hljs.initHighlightingOnLoad();';
+		wp_add_inline_script( 'highlightjs', $scripts );
 	}
 
 	/**
@@ -278,6 +307,27 @@ class MB_Custom_Taxonomy_Edit {
 			),
 		);
 
+		$code_fields = array(
+			array(
+				'name' => __( 'Function name', 'mb-custom-post-type' ),
+				'id'   => 'function_name',
+				'type' => 'text',
+				'std'  => 'your_prefix_register_taxonomy',
+			),
+			array(
+				'name' => __( 'Text domain', 'mb-custom-post-type' ),
+				'id'   => 'text_domain',
+				'type' => 'text',
+				'std'  => 'text-domain',
+			),
+			array(
+				'name' => __( 'Code', 'mb-custom-post-type' ),
+				'id'   => 'code',
+				'type' => 'custom-html',
+				'callback' => array( $this, 'generated_code_html' ),
+			),
+		);
+
 		// Basic settings.
 		$meta_boxes[] = array(
 			'id'         => 'basic-settings',
@@ -354,6 +404,13 @@ class MB_Custom_Taxonomy_Edit {
 					'options' => $options,
 				),
 			),
+		);
+
+		$meta_boxes[] = array(
+			'id'         => 'generated-code',
+			'title'      => __( 'Generated code', 'mb-custom-post-type' ),
+			'post_types' => array( 'mb-taxonomy' ),
+			'fields'     => $code_fields,
 		);
 
 		$fields = array_merge( $basic_fields, $labels_fields, $advanced_fields );
@@ -443,5 +500,31 @@ class MB_Custom_Taxonomy_Edit {
 		if ( $this->is_screen() ) {
 			echo 'ng-controller="TaxonomyController"';
 		}
+	}
+
+	/**
+	 * Print generated code textarea.
+	 *
+	 * @return string
+	 */
+	public function generated_code_html() {
+		$post_id = get_the_ID();
+
+		if ( 'publish' !== get_post_status( $post_id ) ) {
+			return;
+		}
+
+		list( $labels, $args ) = $this->register->get_taxonomy_data( $post_id );
+		$taxonomy_data = $this->register->set_up_taxonomy( $labels, $args );
+
+		$encode_data = array(
+			'function_name' => get_post_meta( $post_id, 'function_name', true ),
+			'text_domain'   => get_post_meta( $post_id, 'text_domain', true ),
+			'taxonomy'      => $args['taxonomy'],
+			'taxonomy_data' => $taxonomy_data,
+		);
+		$encoded_string = $this->encoder->encode( $encode_data );
+
+		return '<div id="generated-code"><pre><code class="php">' . esc_textarea( $encoded_string ) . '</code></pre></div>';
 	}
 }
