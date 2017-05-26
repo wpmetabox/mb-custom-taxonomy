@@ -407,8 +407,8 @@ class MB_Custom_Taxonomy_Edit {
 		);
 
 		$meta_boxes[] = array(
-			'id'         => 'generated-code',
-			'title'      => __( 'Generated code', 'mb-custom-post-type' ),
+			'id'         => 'generate-code',
+			'title'      => __( 'Generate Code', 'mb-custom-post-type' ),
 			'post_types' => array( 'mb-taxonomy' ),
 			'fields'     => $code_fields,
 		);
