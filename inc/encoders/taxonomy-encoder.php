@@ -3,7 +3,7 @@
  * Taxonomy encoder class
  *
  * @package    Meta Box
- * @subpackage MB Custom Post Type
+ * @subpackage MB Custom Taxonomy
  */
 
 if ( ! class_exists( 'MB_CPT_Taxonomy_Encoder' ) ) {

@@ -56,21 +56,10 @@ Install **MB Custom Taxonomy** extension
 
 == Changelog ==
 
-= 1.2 =
+= 1.2.1 =
 
-- Add export to PHP code, so you can just copy and paste into your theme or plugin.
+- Added "About" page to help new users use the plugin.
 
-= 1.1 =
-
-- Fix: Taxonomy is not visible in the frontend.
-- Improvement: Add support for REST API.
-
-= 1.0.1 =
-
-- Fix: Custom taxonomies now can be added to 'post', 'page', 'attachment'
-
-= 1.0.0 =
-
-- First version
+[See changelog for all versions](https://github.com/rilwis/mb-custom-taxonomy/blob/master/CHANGELOG.md).
 
 == Upgrade Notice ==

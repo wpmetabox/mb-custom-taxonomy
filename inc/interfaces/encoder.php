@@ -3,7 +3,7 @@
  * Encoder interface
  *
  * @package    Meta Box
- * @subpackage MB Custom Post Type
+ * @subpackage MB Custom Taxonomy
  */
 
 if ( ! interface_exists( 'MB_CPT_Encoder_Interface' ) ) {
