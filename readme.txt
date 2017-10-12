@@ -1,10 +1,10 @@
 === MB Custom Taxonomy ===
 Contributors: metabox, rilwis, fitwp
-Donate link: http://www.deluxeblogtips.com/donate
+Donate link: https://paypal.me/anhtnt
 Tags: cms, custom, custom taxonomies, custom taxonomy, post, taxonomy, taxonomies
 Requires at least: 4.3
-Tested up to: 4.7.5
-Stable tag: 1.2
+Tested up to: 4.8.2
+Stable tag: 1.2.3
 License: GPLv2 or later
 
 Create and manage custom taxonomies with an easy-to-use interface in WordPress.
@@ -56,10 +56,6 @@ Install **MB Custom Taxonomy** extension
 
 == Changelog ==
 
-= 1.2.1 =
-
-- Added "About" page to help new users use the plugin.
-
-[See changelog for all versions](https://github.com/rilwis/mb-custom-taxonomy/blob/master/CHANGELOG.md).
+[See full changelog here](https://github.com/rilwis/mb-custom-taxonomy/blob/master/CHANGELOG.md).
 
 == Upgrade Notice ==

@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## Unreleased
 
+## 1.2.3
+### Fixed
+- Fixed undefined index `post_types` when register new taxonomy.
+
+## 1.2.2
+### Fixed
+- Fixed error in generated code for taxonomy.
+
 ## 1.2.1
 ### Added
 - Added "About" page to help new users use the plugin.
