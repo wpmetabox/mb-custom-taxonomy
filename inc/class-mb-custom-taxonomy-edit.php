@@ -40,7 +40,7 @@ class MB_Custom_Taxonomy_Edit {
 	 */
 	public function __construct( MB_Custom_Taxonomy_Register $register, MB_CPT_Encoder_Interface $encoder ) {
 		$this->register = $register;
-		$this->encoder = $encoder;
+		$this->encoder  = $encoder;
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_filter( 'rwmb_meta_boxes', array( $this, 'register_meta_boxes' ) );
@@ -58,16 +58,19 @@ class MB_Custom_Taxonomy_Edit {
 			return;
 		}
 
-		wp_enqueue_style( 'highlightjs', MB_CUSTOM_TAXONOMY_URL . 'css/monokai-sublime.css', array(), '9.11.0', false );
-		wp_enqueue_style( 'mb-custom-taxonomy', MB_CUSTOM_TAXONOMY_URL . 'css/style.css', array(), '1.0.0', false );
+		wp_enqueue_style( 'highlightjs', MB_CUSTOM_TAXONOMY_URL . 'css/atom-one-dark.css' );
+		wp_enqueue_style( 'mb-custom-taxonomy', MB_CUSTOM_TAXONOMY_URL . 'css/style.css' );
 
 		wp_enqueue_script( 'angular', MB_CUSTOM_TAXONOMY_URL . 'js/angular.min.js', array(), '1.4.2', true );
 		wp_enqueue_script( 'highlightjs', MB_CUSTOM_TAXONOMY_URL . 'js/highlight.pack.js', array(), '9.11.0', true );
+		wp_enqueue_script( 'clipboard', MB_CUSTOM_TAXONOMY_URL . 'js/clipboard.min.js', array(), '1.3.2', true );
 
 		if ( ! wp_script_is( 'mb-cpt', 'enqueued' ) ) {
 			wp_enqueue_script( 'mb-custom-taxonomy', MB_CUSTOM_TAXONOMY_URL . 'js/script.js', array(
 				'jquery',
 				'angular',
+				'clipboard',
+				'highlightjs',
 			), '1.0.0', false );
 		}
 
@@ -88,12 +91,12 @@ class MB_Custom_Taxonomy_Edit {
 			'add_or_remove_items'        => __( 'Add or remove %name%', 'mb-custom-taxonomy' ),
 			'choose_from_most_used'      => __( 'Choose most used %name%', 'mb-custom-taxonomy' ),
 			'not_found'                  => __( 'No %name% found', 'mb-custom-taxonomy' ),
+			'copy'                       => __( 'Copy', 'mb-custom-taxonomy' ),
+			'copied'                     => __( 'Copied', 'mb-custom-taxonomy' ),
+			'manualCopy'                 => __( 'Press Ctrl-C to copy', 'mb-custom-taxonomy' ),
 		);
 		// @codingStandardsIgnoreEnd
 		wp_localize_script( 'mb-custom-taxonomy', 'MBTaxonomyLabels', $labels );
-
-		$scripts = 'hljs.initHighlightingOnLoad();';
-		wp_add_inline_script( 'highlightjs', $scripts );
 	}
 
 	/**
@@ -275,16 +278,16 @@ class MB_Custom_Taxonomy_Edit {
 				'desc' => __( 'Whether to allow automatic creation of taxonomy columns on associated post-types table.', 'mb-custom-taxonomy' ),
 			),
 			array(
-				'name' => __( 'Show in REST?', 'mb-custom-post-type' ),
+				'name' => __( 'Show in REST?', 'mb-custom-taxonomy' ),
 				'id'   => $args_prefix . 'show_in_rest',
 				'type' => 'checkbox',
-				'desc' => __( 'Whether to include the taxonomy in the REST API.', 'mb-custom-post-type' ),
+				'desc' => __( 'Whether to include the taxonomy in the REST API.', 'mb-custom-taxonomy' ),
 			),
 			array(
-				'name' => __( 'REST base', 'mb-custom-post-type' ),
+				'name' => __( 'REST base', 'mb-custom-taxonomy' ),
 				'id'   => $args_prefix . 'rest_base',
 				'type' => 'checkbox',
-				'desc' => __( 'To change the base url of REST API route. Default is taxonomy slug.', 'mb-custom-post-type' ),
+				'desc' => __( 'To change the base url of REST API route. Default is taxonomy slug.', 'mb-custom-taxonomy' ),
 			),
 			array(
 				'name' => __( 'Hierarchical?', 'mb-custom-taxonomy' ),
@@ -305,25 +308,46 @@ class MB_Custom_Taxonomy_Edit {
 				'type' => 'checkbox',
 				'desc' => __( 'Whether this taxonomy should remember the order in which terms are added to objects.', 'mb-custom-taxonomy' ),
 			),
+			array(
+				'name' => __( 'Rewrite', 'mb-custom-taxonomy' ),
+				'type' => 'heading',
+			),
+			array(
+				'name' => __( 'Rewrite slug', 'mb-custom-taxonomy' ),
+				'id'   => $args_prefix . 'rewrite_slug',
+				'type' => 'text',
+				'desc' => __( 'Leave empty to use post type as rewrite slug.', 'mb-custom-taxonomy' ),
+			),
+			array(
+				'name' => __( 'No prepended permalink structure?', 'mb-custom-taxonomy' ),
+				'id'   => $args_prefix . 'rewrite_no_front',
+				'type' => 'checkbox',
+				'desc' => __( 'Do not prepend the permalink structure with the front base.', 'mb-custom-taxonomy' ),
+			),
+			array(
+				'name' => __( 'Hierarchical URL', 'mb-custom-taxonomy' ),
+				'id'   => $args_prefix . 'rewrite_hierarchical',
+				'type' => 'checkbox',
+			),
 		);
 
 		$code_fields = array(
 			array(
-				'name' => __( 'Function name', 'mb-custom-post-type' ),
+				'name' => __( 'Function name', 'mb-custom-taxonomy' ),
 				'id'   => 'function_name',
 				'type' => 'text',
 				'std'  => 'your_prefix_register_taxonomy',
 			),
 			array(
-				'name' => __( 'Text domain', 'mb-custom-post-type' ),
+				'name' => __( 'Text domain', 'mb-custom-taxonomy' ),
 				'id'   => 'text_domain',
 				'type' => 'text',
 				'std'  => 'text-domain',
 			),
 			array(
-				'name' => __( 'Code', 'mb-custom-post-type' ),
-				'id'   => 'code',
-				'type' => 'custom-html',
+				'name'     => __( 'Code', 'mb-custom-taxonomy' ),
+				'id'       => 'code',
+				'type'     => 'custom-html',
 				'callback' => array( $this, 'generated_code_html' ),
 			),
 		);
@@ -408,16 +432,32 @@ class MB_Custom_Taxonomy_Edit {
 
 		$meta_boxes[] = array(
 			'id'         => 'generate-code',
-			'title'      => __( 'Generate Code', 'mb-custom-post-type' ),
+			'title'      => __( 'Generate Code', 'mb-custom-taxonomy' ),
 			'post_types' => array( 'mb-taxonomy' ),
 			'fields'     => $code_fields,
+		);
+
+		$meta_boxes[] = array(
+			'id'         => 'upgrade',
+			'title'      => __( 'Upgrade to Meta Box Premium', 'mb-custom-taxonomy' ),
+			'post_types' => array( 'mb-post-type', 'mb-taxonomy' ),
+			'context'    => 'side',
+			'priority'   => 'low',
+			'fields'     => array(
+				array(
+					'type'     => 'custom_html',
+					'callback' => array( $this, 'upgrade_message' ),
+				),
+			),
 		);
 
 		$fields = array_merge( $basic_fields, $labels_fields, $advanced_fields );
 
 		// Add ng-model attribute to all fields.
 		foreach ( $fields as $field ) {
-			add_filter( 'rwmb_' . $field['id'] . '_html', array( $this, 'modify_field_html' ), 10, 3 );
+			if ( ! empty( $field['id'] ) ) {
+				add_filter( 'rwmb_' . $field['id'] . '_html', array( $this, 'modify_field_html' ), 10, 3 );
+			}
 		}
 
 		return $meta_boxes;
@@ -521,7 +561,7 @@ class MB_Custom_Taxonomy_Edit {
 			unset( $taxonomy_data['meta_box_cb'] );
 		}
 
-		$encode_data = array(
+		$encode_data    = array(
 			'function_name' => get_post_meta( $post_id, 'function_name', true ),
 			'text_domain'   => get_post_meta( $post_id, 'text_domain', true ),
 			'taxonomy'      => $args['taxonomy'],
@@ -529,6 +569,39 @@ class MB_Custom_Taxonomy_Edit {
 		);
 		$encoded_string = $this->encoder->encode( $encode_data );
 
-		return '<div id="generated-code"><pre><code class="php">' . esc_textarea( $encoded_string ) . '</code></pre></div>';
+		$output = '
+			<div id="generated-code">
+				<a href="javascript:void(0);" class="mb-button--copy">
+					<svg class="mb-icon--copy" aria-hidden="true" role="img"><use href="#mb-icon-copy" xlink:href="#icon-copy"></use></svg>
+					' . esc_html__( 'Copy', 'mb-custom-taxonomy' ) . '
+				</a>
+				<pre><code class="php">' . esc_textarea( $encoded_string ) . '</code></pre>
+			</div>';
+		$output .= '
+			<svg style="display: none;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+				<symbol id="mb-icon-copy" viewBox="0 0 1024 896">
+					<path d="M128 768h256v64H128v-64z m320-384H128v64h320v-64z m128 192V448L384 640l192 192V704h320V576H576z m-288-64H128v64h160v-64zM128 704h160v-64H128v64z m576 64h64v128c-1 18-7 33-19 45s-27 18-45 19H64c-35 0-64-29-64-64V192c0-35 29-64 64-64h192C256 57 313 0 384 0s128 57 128 128h192c35 0 64 29 64 64v320h-64V320H64v576h640V768zM128 256h512c0-35-29-64-64-64h-64c-35 0-64-29-64-64s-29-64-64-64-64 29-64 64-29 64-64 64h-64c-35 0-64 29-64 64z" />
+				</symbol>
+			</svg>';
+
+		return $output;
+	}
+
+	/**
+	 * Display upgrade message.
+	 *
+	 * @return string
+	 */
+	public function upgrade_message() {
+		$output = '<ul>';
+		$output .= '<li>' . __( 'Create custom fields with drag-n-drop interface - no coding knowledge required!', 'mb-custom-taxonomy' ) . '</li>';
+		$output .= '<li>' . __( 'Add custom fields to taxonomies or user profile.', 'mb-custom-taxonomy' ) . '</li>';
+		$output .= '<li>' . __( 'Create custom settings pages.', 'mb-custom-taxonomy' ) . '</li>';
+		$output .= '<li>' . __( 'Create frontend submission forms.', 'mb-custom-taxonomy' ) . '</li>';
+		$output .= '<li>' . __( 'And much more!', 'mb-custom-taxonomy' ) . '</li>';
+		$output .= '</ul>';
+		$output .= '<a href="https://metabox.io/pricing/?utm_source=plugin_ct&utm_medium=btn_upgrade&utm_campaign=ct_upgrade" class="button button-primary">' . esc_html__( 'Get Meta Box Premium now', 'mb-custom-taxonomy' ) . '</a>';
+
+		return $output;
 	}
 }

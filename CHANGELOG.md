@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## Unreleased
 
+## 1.3.0
+### Added
+- Added support for rewrite options for taxonomies.
+- Added "Copy to Clipboard" for generated code.
+
 ## 1.2.3
 ### Fixed
 - Fixed undefined index `post_types` when register new taxonomy.
