@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## Unreleased
 
+## 1.3.1 - 2018-05-28
+### Changed
+- Hide the ads for premium users. You need to enter correct license key to hide it.
+
 ## 1.3.0
 ### Added
 - Added support for rewrite options for taxonomies.
