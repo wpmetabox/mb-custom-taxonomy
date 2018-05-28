@@ -16,6 +16,10 @@
 // Prevent loading this file directly.
 defined( 'ABSPATH' ) || exit;
 
+// Plugin constants.
+define( 'MB_CUSTOM_TAXONOMY_FILE', __FILE__ );
+define( 'MB_CUSTOM_TAXONOMY_URL', plugin_dir_url( __FILE__ ) );
+
 add_action( 'init', 'mb_custom_taxonomy_load', 0 );
 
 /**
@@ -25,40 +29,27 @@ add_action( 'init', 'mb_custom_taxonomy_load', 0 );
  */
 function mb_custom_taxonomy_load() {
 	// If Meta Box is NOT active.
-	if ( current_user_can( 'activate_plugins' ) && ! class_exists( 'RW_Meta_Box' ) ) {
+	if ( current_user_can( 'activate_plugins' ) && ! defined( 'RWMB_VER' ) ) {
 		add_action( 'admin_notices', 'mb_custom_taxonomy_admin_notice' );
 
 		return;
 	}
-
-	// Plugin constants.
-	define( 'MB_CUSTOM_TAXONOMY_FILE', __FILE__ );
-	define( 'MB_CUSTOM_TAXONOMY_URL', plugin_dir_url( __FILE__ ) );
 
 	load_plugin_textdomain( 'mb-custom-taxonomy' );
 
 	require_once dirname( __FILE__ ) . '/inc/class-mb-custom-taxonomy-register.php';
 	$register = new MB_Custom_Taxonomy_Register();
 
-	if ( is_admin() ) {
-		require_once dirname( __FILE__ ) . '/inc/class-mb-custom-taxonomy-edit.php';
-		require_once dirname( __FILE__ ) . '/inc/interfaces/encoder.php';
-		require_once dirname( __FILE__ ) . '/inc/encoders/taxonomy-encoder.php';
-		require_once dirname( __FILE__ ) . '/inc/about/about.php';
-
-		$tax_encoder = new MB_CPT_Taxonomy_Encoder();
-		new MB_Custom_Taxonomy_Edit( $register, $tax_encoder );
-
-		$about_page = new MB_Custom_Taxonomy_About_Page();
-		$about_page->init();
-
-		// Redirect to about page.
-		if ( get_option( 'mb_custom_taxonomy_redirect' ) ) {
-			delete_option( 'mb_custom_taxonomy_redirect' );
-			wp_safe_redirect( admin_url( 'edit.php?post_type=mb-taxonomy&page=mb-custom-taxonomy-about' ) );
-			exit;
-		}
+	if ( ! is_admin() ) {
+		return;
 	}
+
+	require_once dirname( __FILE__ ) . '/inc/class-mb-custom-taxonomy-edit.php';
+	require_once dirname( __FILE__ ) . '/inc/interfaces/encoder.php';
+	require_once dirname( __FILE__ ) . '/inc/encoders/taxonomy-encoder.php';
+
+	$tax_encoder = new MB_CPT_Taxonomy_Encoder();
+	new MB_Custom_Taxonomy_Edit( $register, $tax_encoder );
 }
 
 /**
@@ -88,11 +79,6 @@ function mb_custom_taxonomy_admin_notice() {
 	}
 }
 
-/**
- * Activate plugin.
- */
-function mb_custom_taxonomy_activate() {
-	update_option( 'mb_custom_taxonomy_redirect', 1 );
-}
-
-register_activation_hook( __FILE__, 'mb_custom_taxonomy_activate' );
+require_once dirname( __FILE__ ) . '/inc/about/about.php';
+$about_page = new MB_Custom_Taxonomy_About_Page();
+$about_page->init();
