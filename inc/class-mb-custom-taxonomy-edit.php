@@ -437,19 +437,21 @@ class MB_Custom_Taxonomy_Edit {
 			'fields'     => $code_fields,
 		);
 
-		$meta_boxes[] = array(
-			'id'         => 'upgrade',
-			'title'      => __( 'Upgrade to Meta Box Premium', 'mb-custom-taxonomy' ),
-			'post_types' => array( 'mb-post-type', 'mb-taxonomy' ),
-			'context'    => 'side',
-			'priority'   => 'low',
-			'fields'     => array(
-				array(
-					'type'     => 'custom_html',
-					'callback' => array( $this, 'upgrade_message' ),
+		if ( ! $this->is_premium_user() ) {
+			$meta_boxes[] = array(
+				'id'         => 'upgrade',
+				'title'      => __( 'Upgrade to Meta Box Premium', 'mb-custom-taxonomy' ),
+				'post_types' => array( 'mb-post-type', 'mb-taxonomy' ),
+				'context'    => 'side',
+				'priority'   => 'low',
+				'fields'     => array(
+					array(
+						'type'     => 'custom_html',
+						'callback' => array( $this, 'upgrade_message' ),
+					),
 				),
-			),
-		);
+			);
+		}
 
 		$fields = array_merge( $basic_fields, $labels_fields, $advanced_fields );
 
@@ -551,7 +553,7 @@ class MB_Custom_Taxonomy_Edit {
 		$post_id = get_the_ID();
 
 		if ( 'publish' !== get_post_status( $post_id ) ) {
-			return;
+			return '';
 		}
 
 		list( $labels, $args ) = $this->register->get_taxonomy_data( $post_id );
@@ -603,5 +605,21 @@ class MB_Custom_Taxonomy_Edit {
 		$output .= '<a href="https://metabox.io/pricing/?utm_source=plugin_ct&utm_medium=btn_upgrade&utm_campaign=ct_upgrade" class="button button-primary">' . esc_html__( 'Get Meta Box Premium now', 'mb-custom-taxonomy' ) . '</a>';
 
 		return $output;
+	}
+
+	/**
+	 * Check if current user is a premium user.
+	 *
+	 * @return bool
+	 */
+	public function is_premium_user() {
+		$option = is_multisite() ? get_site_option( 'meta_box_updater' ) : get_option( 'meta_box_updater' );
+		if ( empty( $option['api_key'] ) ) {
+			return false;
+		}
+		if ( isset( $option['status'] ) && 'success' !== $option['status'] ) {
+			return false;
+		}
+		return true;
 	}
 }
