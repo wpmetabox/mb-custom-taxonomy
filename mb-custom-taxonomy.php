@@ -3,7 +3,7 @@
  * Plugin Name: MB Custom Taxonomy
  * Plugin URI: https://metabox.io/plugins/custom-taxonomy/
  * Description: Create custom taxonomies with easy-to-use UI
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: MetaBox.io
  * Author URI: https://metabox.io
  * License: GPL-2.0+
@@ -28,6 +28,11 @@ add_action( 'init', 'mb_custom_taxonomy_load', 0 );
  * @link https://gist.github.com/mathetos/7161f6a88108aaede32a
  */
 function mb_custom_taxonomy_load() {
+	// Do nothing if the MB Custom Post Type plugin is active.
+	if ( function_exists( 'mb_cpt_load' ) ) {
+		return;
+	}
+
 	// If Meta Box is NOT active.
 	if ( current_user_can( 'activate_plugins' ) && ! defined( 'RWMB_VER' ) ) {
 		add_action( 'admin_notices', 'mb_custom_taxonomy_admin_notice' );

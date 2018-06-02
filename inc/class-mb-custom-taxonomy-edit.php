@@ -284,10 +284,11 @@ class MB_Custom_Taxonomy_Edit {
 				'desc' => __( 'Whether to include the taxonomy in the REST API.', 'mb-custom-taxonomy' ),
 			),
 			array(
-				'name' => __( 'REST base', 'mb-custom-taxonomy' ),
-				'id'   => $args_prefix . 'rest_base',
-				'type' => 'checkbox',
-				'desc' => __( 'To change the base url of REST API route. Default is taxonomy slug.', 'mb-custom-taxonomy' ),
+				'name'        => __( 'REST API base slug', 'mb-custom-post-type' ),
+				'id'          => $args_prefix . 'rest_base',
+				'type'        => 'text',
+				'placeholder' => __( 'Slug to use in REST API URLs', 'mb-custom-post-type' ),
+				'desc'        => __( 'Leave empty to use the taxonomy slug.', 'mb-custom-post-type' ),
 			),
 			array(
 				'name' => __( 'Hierarchical?', 'mb-custom-taxonomy' ),
