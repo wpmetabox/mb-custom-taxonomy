@@ -62,6 +62,11 @@
 	overflow: hidden;
 }
 
+#generated-code pre {
+	tab-size: 4;
+	-moz-tab-size: 4;
+}
+
 .mb-button--copy {
 	position: absolute;
 	top: 13px;
