@@ -42,19 +42,26 @@ function mb_custom_taxonomy_load() {
 
 	load_plugin_textdomain( 'mb-custom-taxonomy' );
 
-	require_once dirname( __FILE__ ) . '/inc/class-mb-custom-taxonomy-register.php';
+	// Show Meta Box admin menu.
+	add_filter( 'rwmb_admin_menu', '__return_true' );
+
+	require dirname( __FILE__ ) . '/inc/class-mb-custom-taxonomy-register.php';
 	$register = new MB_Custom_Taxonomy_Register();
 
 	if ( ! is_admin() ) {
 		return;
 	}
 
-	require_once dirname( __FILE__ ) . '/inc/class-mb-custom-taxonomy-edit.php';
-	require_once dirname( __FILE__ ) . '/inc/interfaces/encoder.php';
-	require_once dirname( __FILE__ ) . '/inc/encoders/taxonomy-encoder.php';
+	require dirname( __FILE__ ) . '/inc/class-mb-custom-taxonomy-edit.php';
+	require dirname( __FILE__ ) . '/inc/interfaces/encoder.php';
+	require dirname( __FILE__ ) . '/inc/encoders/taxonomy-encoder.php';
+	require dirname( __FILE__ ) . '/inc/about/about.php';
 
 	$tax_encoder = new MB_CPT_Taxonomy_Encoder();
 	new MB_Custom_Taxonomy_Edit( $register, $tax_encoder );
+
+	$about_page = new MB_Custom_Taxonomy_About_Page();
+	$about_page->init();
 }
 
 /**
@@ -83,7 +90,3 @@ function mb_custom_taxonomy_admin_notice() {
 		unset( $_GET['activate'] );
 	}
 }
-
-require_once dirname( __FILE__ ) . '/inc/about/about.php';
-$about_page = new MB_Custom_Taxonomy_About_Page();
-$about_page->init();
