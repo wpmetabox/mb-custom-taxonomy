@@ -5,12 +5,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## Unreleased
 
+## 1.4.0 - 2018-06-08
+### Improved
+- Used the shared menu from Meta Box to keep the admin menu clean.
+- Added tabs to the About page
+- Remove redirection after activation.
+
 ## 1.3.2 - 2018-06-02
 ### Changed
 - Do nothing if plugin MB Custom Post Type is active
+
 ### Fixed
 - Fixed button "Advanced" not working
-- Fixed REST API base not a text input 
+- Fixed REST API base not a text input
 
 ## 1.3.1 - 2018-05-28
 ### Changed
