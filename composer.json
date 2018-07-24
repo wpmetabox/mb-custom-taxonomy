@@ -27,5 +27,8 @@
     "files": [
       "mb-custom-taxonomy.php"
     ]
+  },
+  "require": {
+    "wpmetabox/meta-box": "^4.15"
   }
 }
