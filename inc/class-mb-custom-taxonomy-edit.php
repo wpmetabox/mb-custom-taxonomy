@@ -251,11 +251,11 @@ class MB_Custom_Taxonomy_Edit {
 				'desc' => __( 'Whether taxonomy is available for selection in navigation menus.', 'mb-custom-taxonomy' ),
 			),
 			array(
-				'name' => __( 'Show in editor page?', 'mb-custom-taxonomy' ),
+				'name' => __( 'Show on edit page?', 'mb-custom-taxonomy' ),
 				'id'   => $args_prefix . 'meta_box_cb',
 				'type' => 'checkbox',
 				'std'  => 1,
-				'desc' => __( 'Whether to show the on the editor page.', 'mb-custom-taxonomy' ),
+				'desc' => __( 'Whether to show the taxonomy on the edit page.', 'mb-custom-taxonomy' ),
 			),
 			array(
 				'name' => __( 'Show tag cloud?', 'mb-custom-taxonomy' ),
