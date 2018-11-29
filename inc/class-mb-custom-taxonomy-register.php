@@ -78,11 +78,13 @@ class MB_Custom_Taxonomy_Register {
 		$taxonomies = array();
 
 		// Get all post where where post_type = mb-taxonomy.
-		$mb_taxonomies = get_posts( array(
-			'posts_per_page' => - 1,
-			'post_status'    => 'publish',
-			'post_type'      => 'mb-taxonomy',
-		) );
+		$mb_taxonomies = get_posts(
+			array(
+				'posts_per_page' => - 1,
+				'post_status'    => 'publish',
+				'post_type'      => 'mb-taxonomy',
+			)
+		);
 
 		foreach ( $mb_taxonomies as $taxonomy ) {
 			list( $labels, $args ) = $this->get_taxonomy_data( $taxonomy->ID );
@@ -137,42 +139,48 @@ class MB_Custom_Taxonomy_Register {
 	 * @return array
 	 */
 	public function set_up_taxonomy( $labels = array(), $args = array() ) {
-		$labels = wp_parse_args( $labels, array(
-			'menu_name'                  => $labels['name'],
-			// translators: %s: Name of the taxonomy in plural form.
-			'all_items'                  => sprintf( __( 'All %s', 'mb-custom-taxonomy' ), $labels['name'] ),
-			// translators: %s: Name of the taxonomy in singular form.
-			'edit_item'                  => sprintf( __( 'Edit %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			// translators: %s: Name of the taxonomy in singular form.
-			'view_item'                  => sprintf( __( 'View %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			// translators: %s: Name of the taxonomy in singular form.
-			'update_item'                => sprintf( __( 'Update %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			// translators: %s: Name of the taxonomy in singular form.
-			'add_new_item'               => sprintf( __( 'Add new %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			// translators: %s: Name of the taxonomy in singular form.
-			'new_item_name'              => sprintf( __( 'New %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			// translators: %s: Name of the taxonomy in singular form.
-			'parent_item'                => sprintf( __( 'Parent %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			// translators: %s: Name of the taxonomy in singular form.
-			'parent_item_colon'          => sprintf( __( 'Parent %s:', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
-			// translators: %s: Name of the taxonomy in plural form.
-			'search_items'               => sprintf( __( 'Search %s', 'mb-custom-taxonomy' ), $labels['name'] ),
-			// translators: %s: Name of the taxonomy in plural form.
-			'popular_items'              => sprintf( __( 'Popular %s', 'mb-custom-taxonomy' ), $labels['name'] ),
-			// translators: %s: Name of the taxonomy in plural form.
-			'separate_items_with_commas' => sprintf( __( 'Separate %s with commas', 'mb-custom-taxonomy' ), $labels['name'] ),
-			// translators: %s: Name of the taxonomy in plural form.
-			'add_or_remove_items'        => sprintf( __( 'Add or remove %s', 'mb-custom-taxonomy' ), $labels['name'] ),
-			// translators: %s: Name of the taxonomy in plural form.
-			'choose_from_most_used'      => sprintf( __( 'Choose most used %s', 'mb-custom-taxonomy' ), $labels['name'] ),
-			// translators: %s: Name of the taxonomy in plural form.
-			'not_found'                  => sprintf( __( 'No %s found', 'mb-custom-taxonomy' ), $labels['name'] ),
-		) );
-		$args   = wp_parse_args( $args, array(
-			'label'  => $labels['name'],
-			'labels' => $labels,
-			'public' => true,
-		) );
+		$labels = wp_parse_args(
+			$labels,
+			array(
+				'menu_name'                  => $labels['name'],
+				// translators: %s: Name of the taxonomy in plural form.
+				'all_items'                  => sprintf( __( 'All %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+				// translators: %s: Name of the taxonomy in singular form.
+				'edit_item'                  => sprintf( __( 'Edit %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+				// translators: %s: Name of the taxonomy in singular form.
+				'view_item'                  => sprintf( __( 'View %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+				// translators: %s: Name of the taxonomy in singular form.
+				'update_item'                => sprintf( __( 'Update %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+				// translators: %s: Name of the taxonomy in singular form.
+				'add_new_item'               => sprintf( __( 'Add new %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+				// translators: %s: Name of the taxonomy in singular form.
+				'new_item_name'              => sprintf( __( 'New %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+				// translators: %s: Name of the taxonomy in singular form.
+				'parent_item'                => sprintf( __( 'Parent %s', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+				// translators: %s: Name of the taxonomy in singular form.
+				'parent_item_colon'          => sprintf( __( 'Parent %s:', 'mb-custom-taxonomy' ), $labels['singular_name'] ),
+				// translators: %s: Name of the taxonomy in plural form.
+				'search_items'               => sprintf( __( 'Search %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+				// translators: %s: Name of the taxonomy in plural form.
+				'popular_items'              => sprintf( __( 'Popular %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+				// translators: %s: Name of the taxonomy in plural form.
+				'separate_items_with_commas' => sprintf( __( 'Separate %s with commas', 'mb-custom-taxonomy' ), $labels['name'] ),
+				// translators: %s: Name of the taxonomy in plural form.
+				'add_or_remove_items'        => sprintf( __( 'Add or remove %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+				// translators: %s: Name of the taxonomy in plural form.
+				'choose_from_most_used'      => sprintf( __( 'Choose most used %s', 'mb-custom-taxonomy' ), $labels['name'] ),
+				// translators: %s: Name of the taxonomy in plural form.
+				'not_found'                  => sprintf( __( 'No %s found', 'mb-custom-taxonomy' ), $labels['name'] ),
+			)
+		);
+		$args   = wp_parse_args(
+			$args,
+			array(
+				'label'  => $labels['name'],
+				'labels' => $labels,
+				'public' => true,
+			)
+		);
 
 		if ( empty( $args['rewrite_slug'] ) && empty( $args['rewrite_no_front'] ) ) {
 			$args['rewrite'] = true;

@@ -18,11 +18,13 @@
 			</p>
 			<p>
 				<?php
-				echo wp_kses_post( sprintf(
-					// Translators: %s is the link to the documentation.
-					__( 'Confused when to use custom taxonomy vs. custom fields? <a href="%s" target="_blank">Read here</a>.', 'mb-custom-taxonomy' ),
-					'https://metabox.io/custom-fields-vs-custom-taxonomies/?utm_source=WordPress&utm_medium=link&utm_campaign=plugin'
-				) );
+				echo wp_kses_post(
+					sprintf(
+						// Translators: %s is the link to the documentation.
+						__( 'Confused when to use custom taxonomy vs. custom fields? <a href="%s" target="_blank">Read here</a>.', 'mb-custom-taxonomy' ),
+						'https://metabox.io/custom-fields-vs-custom-taxonomies/?utm_source=WordPress&utm_medium=link&utm_campaign=plugin'
+					)
+				);
 				?>
 			</p>
 		</div>
@@ -31,23 +33,25 @@
 			<h3><?php esc_html_e( 'Want To Create Custom Post Types?', 'mb-custom-taxonomy' ); ?></h3>
 			<p>
 				<?php
-				echo wp_kses_post( sprintf(
-					// Translators: %s is the link to the plugin.
-					__( 'Check out the <a href="%s" target="_blank">MB Custom Post Type</a> plugin which allows you to create custom post types and taxonomies in WordPress quickly with the same UI.', 'mb-custom-taxonomy' ),
-					'https://metabox.io/custom-post-type/?utm_source=WordPress&utm_medium=link&utm_campaign=plugin'
-				) );
+				echo wp_kses_post(
+					sprintf(
+						// Translators: %s is the link to the plugin.
+						__( 'Check out the <a href="%s" target="_blank">MB Custom Post Type</a> plugin which allows you to create custom post types and taxonomies in WordPress quickly with the same UI.', 'mb-custom-taxonomy' ),
+						'https://metabox.io/custom-post-type/?utm_source=WordPress&utm_medium=link&utm_campaign=plugin'
+					)
+				);
 				?>
 			</p>
 			<?php if ( ! function_exists( 'mb_cpt_load' ) ) : ?>
 				<?php
-				$plugins      = get_plugins();
-				$is_installed = isset( $plugins['mb-custom-post-type/mb-custom-post-type.php'] );
-				$install_url  = wp_nonce_url( admin_url( 'update.php?action=install-plugin&plugin=mb-custom-post-type' ), 'install-plugin_mb-custom-post-type' );
-				$activate_url = wp_nonce_url( admin_url( 'plugins.php?action=activate&amp;plugin=mb-custom-post-type/mb-custom-post-type.php' ), 'activate-plugin_mb-custom-post-type/mb-custom-post-type.php' );
-				$action_url   = $is_installed ? $activate_url : $install_url;
-				$action       = $is_installed ? __( 'Activate Now', 'mb-taxonomy' ) : __( 'Install Now', 'mb-taxonomy' );
+				$mbct_plugins      = get_plugins();
+				$mbct_is_installed = isset( $mbct_plugins['mb-custom-post-type/mb-custom-post-type.php'] );
+				$mbct_install_url  = wp_nonce_url( admin_url( 'update.php?action=install-plugin&plugin=mb-custom-post-type' ), 'install-plugin_mb-custom-post-type' );
+				$mbct_activate_url = wp_nonce_url( admin_url( 'plugins.php?action=activate&amp;plugin=mb-custom-post-type/mb-custom-post-type.php' ), 'activate-plugin_mb-custom-post-type/mb-custom-post-type.php' );
+				$mbct_action_url   = $mbct_is_installed ? $mbct_activate_url : $mbct_install_url;
+				$mbct_action       = $mbct_is_installed ? __( 'Activate Now', 'mb-taxonomy' ) : __( 'Install Now', 'mb-taxonomy' );
 				?>
-				<p><a class="button" href="<?php echo esc_url( $action_url ); ?>"><?php echo esc_html( $action ); ?></a></p>
+				<p><a class="button" href="<?php echo esc_url( $mbct_action_url ); ?>"><?php echo esc_html( $mbct_action ); ?></a></p>
 			<?php else : ?>
 				<p><a target="_blank" class="button" href="https://metabox.io/custom-post-type/?utm_source=WordPress&utm_medium=link&utm_campaign=plugin"><?php esc_html_e( 'Learn More', 'mb-custom-taxonomy' ); ?></a></p>
 			<?php endif; ?>

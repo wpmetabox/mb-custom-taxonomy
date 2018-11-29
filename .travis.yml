@@ -1,17 +1,13 @@
 language: php
-
 php:
-  - 7.0
-
+- 7.0
 matrix:
   fast_finish: true
-
 before_script:
-  - composer create-project wp-coding-standards/wpcs --no-dev
-
-# Run PHP Code Sniffer to check WordPress coding standards
+- composer create-project wp-coding-standards/wpcs --no-dev
 script:
-  - wpcs/vendor/bin/phpcs -n --standard=./codesniffer.ruleset.xml --extensions=php --ignore=demo,tests,wpcs .
-
+- wpcs/vendor/bin/phpcs -n --standard=./codesniffer.ruleset.xml --extensions=php --ignore=demo,tests,wpcs .
 notifications:
-  slack: elightup:dJunN1jYND443P6WizwZY8Kr
+  slack:
+    rooms:
+      secure: eUp0/hU9bljd7BQhjXkIWpOarIPnv4Uat4WaRSntgHvt0unxAD17Izzy4U0P/OGtsda8Wf58yG8j7Bycs9200gw5vXbTNYHeuXE2dGXrd1ijz3+uoliSotj3G7H23bOEHUv8zs5xsldIPN1ejruMCdZe5ffBjd6l6ELU9taen2IOTkP/FVRIP20C8WGn+W3C2rro5Z6ajLv4M9dK58zaKx0x4PZjgWstqPhtmzhx/Q52Sjan2ChoRmhip9LFB6hlo/S645pKaw7dIMEr3GtHy4003mnbkgk5VZLFBzsVz+6tlwn7pnq51hmBCNl4VlkAVAkMadP96VSVV0NyWcSJxzjoa6JGZOf/1NkjpCcfu6LtEK+TBD3Q1Wh5IA8dwB1yewVZ8qf/B6NxmK1baHiC9i/4e53amQ4YIGGrF6I/w1pSehM0f7fr1+Ebdmouhc2f4GvYP+XpX3r+b0b/AHSf0kz6163TCJH6K38AmWI1s3ynV5hrcyww3mxQJINAyjEjVEEGK3TwdG+UcO1N6kdOL9CGQ1SMH1AaWKIXXl93Zcjoaaji6qbgwbeNOyhWTqRTkYQbrJ/h1uxGGtps/qnpJ74RYECkqYI0M4bkctE/c+W7c5m6B3t9QNMeNC/G8z8xiA/hli9P36ZkyAKb2r6B927IcgfEDoCmA++leUp9XrE=
