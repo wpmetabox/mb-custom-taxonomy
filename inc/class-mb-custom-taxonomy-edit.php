@@ -287,6 +287,7 @@ class MB_Custom_Taxonomy_Edit {
 				'name' => __( 'Show in REST?', 'mb-custom-taxonomy' ),
 				'id'   => $args_prefix . 'show_in_rest',
 				'type' => 'checkbox',
+				'std'  => 1,
 				'desc' => __( 'Whether to include the taxonomy in the REST API.', 'mb-custom-taxonomy' ),
 			),
 			array(

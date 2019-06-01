@@ -56,6 +56,83 @@ Install **MB Custom Taxonomy** extension
 
 == Changelog ==
 
-[See full changelog here](https://github.com/rilwis/mb-custom-taxonomy/blob/master/CHANGELOG.md).
+= 1.4.2 - 2019-06-01 =
+
+**Changed**
+
+- Update the page layout to make it more friendly.
+- Make the plugin safe to include in Meta Box AIO.
+- Enabled REST API by default for taxonomies to make they work with Gutenberg.
+
+= 1.4.1 - 2018-12-10 =
+
+**Fixed**
+
+- Fixed typo and reformat code.
+
+= 1.4.0 - 2018-06-08 =
+
+**Improved**
+
+- Used the shared menu from Meta Box to keep the admin menu clean.
+- Added tabs to the About page
+- Remove redirection after activation.
+
+= 1.3.2 - 2018-06-02 =
+
+**Changed**
+
+- Do nothing if plugin MB Custom Post Type is active
+
+
+**Fixed**
+
+- Fixed button "Advanced" not working
+- Fixed REST API base not a text input
+
+= 1.3.1 - 2018-05-28 =
+
+**Changed**
+
+- Hide the ads for premium users. You need to enter correct license key to hide it.
+
+= 1.3.0 =
+
+**Added**
+
+- Added support for rewrite options for taxonomies.
+- Added "Copy to Clipboard" for generated code.
+
+= 1.2.3 =
+
+**Fixed**
+
+- Fixed undefined index `post_types` when register new taxonomy.
+
+= 1.2.2 =
+
+**Fixed**
+
+- Fixed error in generated code for taxonomy.
+
+= 1.2.1 =
+
+**Added**
+
+- Added "About" page to help new users use the plugin.
+
+= 1.2 =
+- Add export to PHP code, so you can just copy and paste into your theme or plugin.
+
+= 1.1 =
+- Fix: Taxonomy is not visible in the frontend.
+- Improvement: Add support for REST API.
+
+= 1.0.1 =
+- Fix: Custom taxonomies now can be added to 'post', 'page', 'attachment'
+
+= 1.0.0 =
+
+- First version
 
 == Upgrade Notice ==
