@@ -3,8 +3,8 @@ Contributors: metabox, rilwis, fitwp
 Donate link: https://metabox.io/pricing/
 Tags: cms, custom, custom taxonomies, custom taxonomy, post, taxonomy, taxonomies
 Requires at least: 4.3
-Tested up to: 5.0
-Stable tag: 1.4.1
+Tested up to: 5.2.2
+Stable tag: 1.4.3
 License: GPLv2 or later
 
 Create and manage custom taxonomies with an easy-to-use interface in WordPress.
@@ -55,6 +55,12 @@ Install **MB Custom Taxonomy** extension
 2. Edit custom taxonomy
 
 == Changelog ==
+
+= 1.4.3 - 2019-08-29 =
+
+**Fixed**
+
+- Do not show upgrade message for premium users
 
 = 1.4.2 - 2019-06-01 =
 
