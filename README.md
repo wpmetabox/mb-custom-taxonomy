@@ -1,10 +1,10 @@
+**IMPORTANT: This plugin is no longer maintained. Please use [MB Custom Post Types & Custom Taxonomies](https://metabox.io/plugins/custom-post-type/) plugin instead.**
+
 **MB Custom Taxonomy** helps you to create and manage custom taxonomies easily in WordPress by providing an easy-to-use interface in the admin area.
 
 The plugin allows you to handle all taxonomy's arguments such as menu labels, admin bar label, hierarchy, etc. just in minutes. You don't need to write custom PHP code to register custom taxonomies anymore (using function `register_taxonomy()`).
 
 Using MB Custom Taxonomy, you will be able to craft the WordPress admin and turn it into a professional Content Management Systems.
-
-Consider using [MB Custom Post Type](https://wordpress.org/plugins/mb-custom-post-type/) to create and manage custom post types with similar interface.
 
 ## Features
 
